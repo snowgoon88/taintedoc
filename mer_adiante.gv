@@ -1,0 +1,325 @@
+digraph TG153 {
+    {
+        node [shape=record]
+        Entrée;
+        {
+            node [label="Fin"] end2; end5; end10; end173; end181; Sortie;
+        }
+        {
+            node [label="Fin, suffoque", width=2, style="filled", fillcolor=red]; end16;
+        }
+    }
+    {
+        node [shape=diamond,style=filled,color=lightgrey]
+        traverser_mer [label="Traverser mer"];
+        ravine [label="Descendre Ravine\nSI 1 COUR"];
+        ouverture [label="Descendre Ouverture\nSI déjà Tréfond\nau choix"];
+        partir [label="Partir"];
+
+        {
+            node [label="(16) Plus Ox",width=2,color=red]
+            _1out; _3out; _6out; _8out; _9out; _11out; _14out; _15out; _17out; _18out; _19out; _21out; _22out; _24out; _25out;
+        }
+
+        _1up [label="pente douce"];
+        _1ins [label="étroit, insectes"];
+
+        _3treN [label="PAS 2° Tréfond"];
+        _3treY [label="DÉJÀ 2° Tréfond"];
+        
+        _5exi [label="quitter"];
+        //_5hum [label="galerie humide"];
+        _5dow [label="puit étroit"];
+        
+        _6lig [label="caverne éclairée"];
+        _6dus [label="tunnel poussière"];
+
+        _7no [label="PAS s22 «Talisman Brillant»"];
+        _7yes [label="s22 «Talisman Brillant»"];
+        
+        _8tun [label="tunnel de mousse"];
+        
+        _9gal [label="galerie humide"];
+        _9rac [label="racine détrempées"];
+        _9up [label="pente souffle froid"];
+        _9dow [label="bruit étranges inférieur"];
+        
+        _10up [label="grimper"];
+        _10gal [label="galerie froide"];
+        _10tun [label="tunnel accidenté"];
+        _10fis [label="fissure malodorante"];
+
+        _11rid [label="rideau mousse"];
+        _11mou [label="mousse vers calcaire"];
+
+        _12vent [label="Suivre bruit vent"];
+        _12eni [label="Affronter «Poseur Enigme»\nSI Ox sup à 2, -1Ox"];
+        
+        _13treN [label="PAS 3° Tréfond"];
+        _13treY [label="DÉJÀ 3° Tréfond"];
+        
+        _14sec [label="plantes séchées"];
+        _14bou [label="corridor boue"];
+        _14bra [label="roches branlantes"];
+        
+        _15air [label="air pur"];
+        _15ins [label="galerie\ninsectes morts"];
+        _15cre [label="crevasse sombre"];
+        _15mou [label="zone mousse"];
+
+        _17pill [label="PAS 3° «Rêve et Prophéties»\npiller"];
+        _17sta [label="stalactites"];
+        _17dus [label="vers nuage poussière"];
+
+        _18lost [label="combat perdu"];
+        //_18gal [label="galerie insectes morts"];
+        _18pue [label="vers puanteur"];
+        _18cha [label="mousse champignons"];
+        _18col [label="air frais"];
+
+        _19dow [label="pente raide"];
+        _19cal [label="passage calcaire"];
+        _19pes [label="empeste la mort"];
+        _19tun [label="relief accidenté"];
+
+        _20treN [label="PAS 1° t=Tréfond"];
+        _20treY [label="DÉJÀ 1° Tréfond"];
+        
+        _22sta [label="passage stable"];
+        
+        _23gal [label="courant froid"];
+        _23fir [label="premier couloir"];
+        _23sec [label="second couloir"];
+
+        _24gro [label="gognement"];
+        _24odo [label="odeur effroyable"];
+
+        _25ch5Y [label="SI chap. 5+"];
+        _25ch5N [label="SI chap. 4-"];
+
+        _132win [label="victoire ?"];
+        _132lost [label="défaite ou fuite ?"];
+
+        _181chau [label="SI 1° Chaudron Noir ET s66"];
+        
+        _321tous [label="SI groupe ENTIER"];
+        _321alone [label="PAS groupe en ENTIER"];
+
+        _481help [label="Aider Dame du Lac"];
+        _481quit [label="Partir"];
+        
+        _485Y [label="Accepter"];
+        _485N [label="Refuser"];
+
+    }
+    {
+        node [shape=box]
+        n1 [label="(1) espace exigu"];
+        n2 [label="(2) test PRUD"];
+        n3 [label="(3) cul de sac"];
+        n5 [label="(5) Tréfonds\nCadran Ox sur 6"];
+        n6 [label="(6) avance prudente"];
+        n7 [label="(7) Talisman usé\ns21 «Talisman Terni»\n3° «Rêves et Prophétie»\n+2T, 1XP"];
+        n8 [label="(8) mousse jaunâtre\n[Ailei]-3E «feuilles voyageur»"];
+        n9 [label="(9) insectes au sol"];
+        n10 [label="(10) trou\nCadran Ox sur 6"];
+        n11 [label="(11) champignons hallu\n[Larve] -1E -2T"];
+        n12 [label="(12) Poseur d'Enigme"];
+        n13 [label="(13) mer derrière parois"];
+        n14 [label="(14) tunnel calcaire"];
+        n15 [label="(15) croisement\nPRUD ou -1V"];
+        n17 [label="(17) cadavres"];
+        n18 [label="(18) air glacial\n VIOLETTE"];
+        n19 [label="(19) nuage poussière"];
+        n20 [label="(20) Stalactites"];
+        n21 [label="(21) Rangée Statues\n2XP, tréf 4", width=2, style="filled", fillcolor=green];
+        n22 [label="(22) roches traîtres\nPRUD -1V"];
+        n23 [label="(23) guirlande\nCadran Ox sur 6"];
+        n24 [label="(24) Colonnes fresques\n-2T"];
+        n25 [label="(25) Caverne rituel Précurseurs"];
+    }
+    {
+        node [shape=ellipse]
+        s132 [label="[132] Gris «Soudards»"];
+        s173 [label="[173] Sac à dos, carte\n+1XP, 2 objets, 1° Tréfond", width=2, style="filled", fillcolor=green];        
+        s181 [label="[181] Tour ancienne penchée\nPAS 5° Tréfond ? => +1XP\n+ 5° Tréfond", width=2, style="filled", fillcolor=green];
+        s321 [label="[321] Caverne Rituels Précurseur\n+3XP, +3Ma\ns7 GRAAL, 3° Tréfond", width=2, style="filled", fillcolor=green];
+        s327 [label="[327] pente boueuse\nmare croupie\n+1XP, +5R, 2° Tréfond", width=2, style="filled", fillcolor=green];
+        s366 [label="[366]"];
+        s412 [label="[412] Bataille fait Rage"];
+        s414 [label="[414] Protégés par Dame Lac\nblessée, +1T"];
+        s485 [label="[485] «La coupe de résoudra RIEN»\naller Tuathan ?"];
+        s481 [label="[481] «Trouvez crannoge d'ORRIN»\n  => SUD Loincomtat\nou LÉANTE  => forêt Murmures\nRelique  =>Plage SUD Camelot\n Secret Enfoui"];
+        s484 [label="[484] Chapitre END\n+1XP, +1R\n 3 TÂCHES", width=2, style="filled", fillcolor=green];
+
+    }
+    subgraph cluster_0 {
+    width=5;
+    color=blue;
+        
+    n12 -> _12vent -> n20;
+    n12 -> _12eni -> n12;
+    
+    n20 -> _20treN -> s173 -> end173;
+    n20 -> _20treY -> n12;
+    
+    label = "1° Tréfond";
+}
+subgraph cluster_1 {
+    width=5;
+    color=blue;
+    _3treN -> s327;
+
+    label = "2° Tréfond";
+}
+subgraph cluster_2 {
+    width=5;
+    color=blue;
+        
+    _13treN -> s321;
+    
+    label ="3° Tréfond";
+}
+subgraph cluster_3 {
+    width=5;
+    color=blue;    
+    _10fis  -> n21 [label="-1Ox"];
+    n21 -> _21out [label="+2T,-1E"];
+    //n21 -> n18 [label="-1Ox"];
+    label = "4° Tréfond";
+}
+subgraph cluster_4 {
+    width=5;
+    color=blue;
+        
+    s181 -> _181chau -> s219;
+    s181 -> end181;
+
+    label= "5° Tréfond";
+    }
+    
+    Entrée -> traverser_mer -> n2;
+    Entrée -> ravine -> n5;
+    Entrée -> ouverture;
+    ouverture -> n10;
+    ouverture -> n23;
+
+    Entrée -> partir -> Sortie;  
+
+    n1 -> _1out [label="+1T,-1E"];
+    n1 -> _1up -> n15;
+    n1 -> _1ins; _1ins -> n9 [label="-1Ox"];
+    
+    n2 -> end2 [label="1-3, -2V"];
+    n2 -> n10 [label="4-5, -1V"];
+    n2 -> n23 [label="6-7, -1V"];
+    n2 -> s181 [label="8+"];
+    
+    // s181 -> _181chau -> s219;
+    // s181 -> end181;
+    
+    n3 -> _3out [label="+3T,-2E"];
+    n3 -> _3treN;
+    _3treN -> s327;
+    s327 -> n14 [label="-1Ox"];
+    n3 -> _3treY; _3treY -> n14 [label="-1Ox"];
+    
+    n5 -> _5exi -> end5;
+    n5 -> _9gal; //_5hum -> n15;
+    n5 -> _5dow; _5dow -> n1 [label="-1Ox"];
+    
+    n6 -> _6out [label="+3T,-1E"];
+    n6 -> _6lig -> n10;
+    n6 -> _6dus -> n19;
+
+    n7 -> _7no -> n17;
+    n7 -> _7yes -> s366;
+
+    n8 -> _8out [label="+1T,-1E"];
+    n8 -> _9gal;
+    n8 -> _8tun -> n23;
+
+    n9 -> _9out [label="+1T,-1E"];
+    n9 -> _9gal; _9gal -> n15 [label="-1Ox"];
+    n9 -> _9rac;
+    _9rac -> n1 [label="-1Ox"];
+    n9 -> _9up -> n18;
+    n9 -> _9dow; _9dow -> n12;
+    
+    n10 -> _10up [label="-1E"]; _10up -> end10;
+    n10 -> _10gal; _10gal -> n18 [label="-1Ox"];
+    n10 -> _10tun; _10tun -> n6 [label="-2Ox"];
+    n10 -> _10fis;
+    //_10fis  -> n21 [label="-1Ox"];
+
+    n11 -> _11out [label="+2T,-1E"];
+    n11 -> _11rid -> n23;
+    n11 -> _11mou; _11mou -> n14 [label="-1Ox"];
+
+
+    n12 -> _15ins;
+
+
+    n13 -> _13treN;
+    
+    //_13treN -> s321;
+    
+    s321 -> _321alone -> s350 -> s414;
+    s321 -> _321tous -> s412 -> s414 -> s485;
+    s485 -> _485Y -> s481;
+    s481 -> _481help -> s132;
+    s132 -> _132win -> s484;
+    s132 -> _132lost -> s470;
+    s481 -> _481quit -> s470;
+    s485 -> _485N -> s494;
+    n13 -> _13treY; _13treY -> n24 [label="-10x"];
+    
+    n14 -> _14out [label="+3T,-1E"];
+    n14 -> _14sec -> n11;
+    n14 -> _14bou; _14bou -> n3 [label="-1Ox"];
+    n14 -> _14bra; _14bra -> n22 [label="-1Ox"];
+    
+    n15 -> _15out [label="+3T"];
+    n15 -> _15air -> n5;
+    n15 -> _15ins; _15ins -> n9 [label="-1Ox"];
+    n15 -> _15cre; _15cre -> n1 [label="-1Ox"];
+    n15 -> _15mou -> n8;
+
+    n17 -> _17out [label="+4T,-2E"];
+    n17 -> _17pill -> n7;
+    n17 -> _17sta; _17sta -> n24 [label="-1Ox"];
+    n17 -> _17dus -> n19;
+    
+    n18 -> _18out [label="+2T,-1E"];
+    n18 -> _18lost; _18lost -> end16 [label="+2T,-1E"];
+    n18 -> _15ins; //_18gal -> n9 [label="-1Ox"];
+    n18 -> _18pue; _18pue -> n21 [label="-1Ox"];
+    n18 -> _18cha -> n23;
+    n18 -> _18col -> n10;
+
+    n19 -> _19out [label="+3T,-2E"];
+    n19 -> _19dow; _19dow -> n24 [label="-1Ox"];
+    n19 -> _19cal; _19cal -> n22 [label="-1Ox"];
+    n19 -> _19pes -> n17;
+    n19 -> _19tun -> n6;
+
+    // n21 -> _21out [label="+2T,-1E"];
+    n21 -> n18 [label="-1Ox"];
+
+    n22 -> _22out [label="+3T,-2E"];
+    n22 -> _22sta; _22sta -> n14 [label="-1Ox"];
+    n22 -> _6dus;
+    
+    n23 -> _10gal; //_23gal -> n18 [label="-1Ox"];
+    n23 -> _23fir; _23fir -> n11 [label="-1Ox"];
+    n23 -> _23sec -> n8;
+
+    n24 -> _24out [label="+4T,-2E"];
+    n24 -> _24gro -> n25;
+    n24 -> _24odo -> n17;
+
+    n25 -> _25ch5Y -> n13;
+    n25 -> _25ch5N [label="-1Ox"];
+    _25ch5N -> _25out [label="+5T,-3E"];
+    _25ch5N -> n24 [label="-1Ox"];
+}
