@@ -1,0 +1,434 @@
+\documentclass[11pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{fullpage}
+%\usepackage[top=2cm, bottom=1.3cm, left=2cm, right=4cm]{geometry}
+\usepackage{hyperref}
+\usepackage{marginnote}
+
+%% \usepackage{tensor}
+%% \usepackage{enumitem}
+%% \usepackage{outlines}
+%% \usepackage{ulem}
+
+\usepackage{makeidx}
+\usepackage{xparse}
+
+\usepackage{fontawesome5}
+\usepackage{awesomebox}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{amssymb}
+\usepackage{soul}
+
+%% *****************************************************************************
+%% ********************************************************************* questOK
+%% *****************************************************************************
+\newtcolorbox{questbox}{colback=violet!10,colframe=white,left skip=0.2\textwidth}
+\newcommand{\quest}[2]{%
+  {\footnotesize
+    \begin{questbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[violet]{2pt}{\faQuestionCircle[regular]}{violet}
+      #2
+    \end{awesomeblock}
+  \end{questbox}
+  }
+}
+
+\newtcolorbox{questOKbox}{colback=green!10,colframe=white,segmentation style={draw=violet,solid},left skip=0.2\textwidth}
+\newcommand{\questOK}[3]{%
+  {\footnotesize
+  \begin{questOKbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[green]{2pt}{\faQuestionCircle}{green}
+      {
+        #2
+
+        {\color{green}\vspace{2mm}\hrule\vspace{2mm}}
+
+        $\leadsto$ #3
+      }
+    \end{awesomeblock}
+  \end{questOKbox}
+  }
+}
+%% *****************************************************************************
+%% *****************************************************************************
+%% *****************************************************************************
+\newcommand{\nrj}[1][]{{\color{teal} #1\faBolt}}
+\newcommand{\nour}[1][]{{\color{olive} #1\faDrumstickBite}}
+\newcommand{\rich}[1][]{{\color{lightgray} #1\faCoins}}
+\newcommand{\rep}[1][]{{\color{orange} #1\faGrin}}
+\newcommand{\magic}[1][]{{\color{violet} #1\faSun}}
+\newcommand{\life}[1][]{{\color{red} #1\faHeart}}
+\newcommand{\terror}[1][]{{\color{black} #1\faSurprise}}
+
+\newtcolorbox{tradebox}{colback=yellow!10,colframe=white}
+%% *****************************************************************************
+%% Define a macro parsing its input argument one character at a time
+
+%% needed in Tex to be used in macro name
+\makeatletter
+
+\newcounter{@tradeitems}
+%% print ', ' if already an item before
+\newcommand\@tradeseparator{%
+  \ifnum\value{@tradeitems}>0 {,} \fi
+  \addtocounter{@tradeitems}{1}
+}
+
+%% e.E: Energie, n/N: NOUR, o/O: RICH, r/R: REP, m/M: MAGIC
+%% \trade[option put after]{combinaison de eXnXoXrXmX > EXNXOXRXMX}
+\newcommand\trade[2][]{%
+  \setcounter{@tradeitems}{0}
+  %\marginnote[right]{[\@mytrade#2\@nnil#1]}
+  [\@mytrade#2\@nnil#1]
+}
+
+\def\@mytrade#1{%
+  %% if #1 == \@nil do nothing and stop expanding
+  %% sinon utilise \mymacro@char@#1 et continue la suite
+  \ifx\@nnil#1\relax\else
+  \@nameuse{mytrade@char@#1\expandafter}%
+  \fi
+}
+%% Définit un "faiseur de macro"
+%% \defcharcode#1 définira une macro \mytrade@char@#1 qui finira par
+%% appeler récursirvement \@mytrade
+\def\defcharcode#1{%
+    \@namedef{mytrade@char@#1}%
+}
+%% e: use NRJ
+\defcharcode{e}#1{%
+  \@tradeseparator%
+  \nrj[-#1]%
+  \@mytrade
+}
+%% n: use NOUR
+\defcharcode{n}#1{% reads further character after q
+  \@tradeseparator%  
+  \nour[-#1]%
+  \@mytrade
+}
+%% o: use OR
+\defcharcode{o}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[-#1]%
+  \@mytrade
+}
+%% r: use REP
+\defcharcode{r}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[-#1]%
+  \@mytrade
+}
+%% m: use MAG
+\defcharcode{m}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[-#1]%
+  \@mytrade
+}
+%% v: use LIFE
+\defcharcode{v}#1{% reads further character after q
+  \@tradeseparator%
+  \life[-#1]%
+  \@mytrade
+}
+%% t: use TERROR
+\defcharcode{t}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[#1]%
+  \@mytrade
+}
+\defcharcode{>}{%
+  \setcounter{@tradeitems}{0}
+   $\Rightarrow$ 
+  \@mytrade
+}
+%% E: gain NRJ
+\defcharcode{E}#1{%
+  \@tradeseparator%
+  \nrj[#1]\index{Gain!Energie}%
+  \@mytrade
+}
+%% N: gain NOUR
+\defcharcode{N}#1{% reads further character after q
+  \@tradeseparator%
+  \nour[#1]\index{Gain!Nourriture}% 
+  \@mytrade
+}
+%% O: gain OR
+\defcharcode{O}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[#1]\index{Gain!Richesse}%
+  \@mytrade
+}
+%% R: gain REP
+\defcharcode{R}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[#1]\index{Gain!Reputation}%
+  \@mytrade
+}
+%% M: gain MAG
+\defcharcode{M}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[#1]\index{Gain!Magie}%
+  \@mytrade
+}
+%% V: gain LIFE
+\defcharcode{V}#1{% reads further character after q
+  \@tradeseparator%
+  \life[#1]\index{Gain!Vie}%
+  \@mytrade
+}
+%% T: gain Terror
+\defcharcode{T}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[-#1]\index{Gain!Terreur}%
+  \@mytrade
+}
+
+
+\makeatother
+%% *****************************************************************************
+
+%% *****************************************************************************
+%% ****************************************************************** secret/loc
+%% *****************************************************************************
+\newcommand{\loc}[1]{%
+  (lieu #1)
+}
+\newcommand{\secret}[1]{%
+  [secret #1]
+}
+%% using xparse
+%% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
+\DeclareDocumentCommand{\lieu}{m O{XX} o}{%
+  \underline{#1} (#2)\index{\IfNoValueTF{#3}{#1}{#3@#1}}%
+}
+
+\def\adiante{\lieu{Mer d'Adiante}[153]}
+\def\blanc{\lieu{Blanc-Lichen}[107]}
+\def\boismuraille{\lieu{Bois-Muraille}}
+\def\bourgr{\lieu{Bourg Pestiféré}[138,142][Bourg]}
+\def\bourgpacif{\lieu{Bourg Pacifié}[142][Bourg]}
+\def\broch{\lieu{Broch Cruach}[136]}
+\def\bundorca{\lieu{Bundorca}[135,148]}
+\def\camelot{\lieu{Camelot}}
+\def\cerclelunaire{\lieu{Cercle Lunaire}[133]}
+\def\chatoyantes{\lieu{Étendues Chatoyantes}[157][Etendues Chatoyantes]}
+\def\conclave{\lieu{Conclave Calciné}[104][Conclave Calcine]}
+\def\croisee{\lieu{Croisée}[152][Croisee]}
+\def\cuanacht{\lieu{Cuanacht}[101]}
+\def\faldorca{\lieu{Faldorca}[148]}
+\def\falfuar{\lieu{Falfuar}[134,147]}
+\def\flotte{\lieu{Flotte d'Épaves}[119][Flotte d'Epaves]}
+\def\lacmiroir{\lieu{Lac Miroir}[113]}
+\def\lames{\lieu{Lames de la Mélancholie}[105][Lames de la Melancholie]}
+\def\loincomtat{\lieu{Loincomtat}}
+\def\newcamelot{\lieu{Nouvelle Camelot}[190]}
+\def\marchestitan{\lieu{Marches du Titan}[115]}
+\def\monasteremere{\lieu{Monastère de la Toute-Mère}[140][Monastere de la Toute-Mere]}
+\def\murmures{\lieu{Forêt des Murmures}[155][Foret des Murmures]}
+\def\nidcorbeaux{\lieu{Nid-de-Corbeaux}[160]}
+\def\noirbourbe{\lieu{Noirebourbe}[140]}
+\def\premierfort{\lieu{Premier Fort}[117]}
+\def\templemere{\lieu{Temple de la Toute-Mère}[115][Temple de la Toute-Mere]}
+\def\tombesordre{\lieu{Tombes de l'Ordre}[154]}
+\def\tordracine{\lieu{Tordracine}[114]}
+\def\tuathan{\lieu{Tuathan}}
+
+\newcommand{\perso}[1]{\textbf{#1}}
+%% using xparse
+%% 1=Nom, [2=key pour index sans accent]
+\DeclareDocumentCommand{\perso}{m o}{%
+  \textbf{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\agravain{\perso{Agravain}}
+\def\amergin{\perso{Amergin}}
+\def\arev{\perso{Arev}}
+\def\aubert{\perso{Aubert}}
+\def\badb{\perso{Badb}}
+\def\bedivere{\perso{Bedivère}[Bedivere]}
+\def\beor{\perso{Béor}[Beor]}
+\def\bors{\perso{Bors}}
+\def\breagach{\perso{Bréagach}[Breagach]}
+\def\cosuil{\perso{Cosuil}}
+\def\dame{\perso{Dame du Lac}}
+\def\erfir{\perso{Erfyr}}
+\def\fael{\perso{Faël}[Fael]}
+\def\gaheris{\perso{Gaheris}}
+\def\galaad{\perso{Galaad}}
+\def\gauvain{\perso{Gauvain}}
+\def\geraint{\perso{Geraint}}
+\def\larve{\perso{Larve}}
+\def\lamorak{\perso{Lamorak}}
+\def\lancelot{\perso{Lancelot}}
+\def\macha{\perso{Macha}}
+\def\mordred{\perso{Mordred}}
+\def\morfran{\perso{Morfran}}
+\def\morgane{\perso{Morgane}}
+\def\neante{\perso{Néante}[Neante]}
+\def\nemain{\perso{Nemain}}
+\def\orrin{\perso{Orrin}}
+\def\palamede{\perso{Palamède}[Palamede]}
+\def\yvain{\perso{Yvain}}
+
+%\newcommand{\art}[1]{\texttt{#1}}
+\DeclareDocumentCommand{\art}{m o}{%
+  \texttt{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\graal{\art{Graal}}
+\def\fauxgraal{\art{Faux Graal}}
+\def\masque{\art{Masque Funéraire}[Masque Funeraire]}
+\def\guivre{\art{Guivre}}
+\def\poupee{\art{Poupée de Paille}[Poupee de Paille]}
+\def\pierrerancune{\art{Pierre des Rancunes}}
+\def\tetemorrigan{\art{Tête de Morrigan}[Tete de Morrigan]}
+
+\newcommand{\gain}[1]{{\color{red}\textbf{[#1]}}}
+
+\newcommand{\unk}[1]{{\color{orange}(#1)}}
+
+
+% ****************************************************************************
+% ********************************************************************** title
+% ****************************************************************************
+\title{%
+Entre le Wyrd d'Avalon.
+}
+
+\makeindex
+%% *****************************************************************************
+%% ******************************************************************** document
+%% *****************************************************************************
+\begin{document}
+
+\maketitle
+
+Énergie: \nrj{}; Nourriture: \nour{}; Richesse: \rich{}; Réputation: \rep{}; Magie: \magic{}, Vie: \life{}, Terreur: \terror{}.
+
+% ****************************************************************************
+% ***************************************************************** Chapitre 1 
+% ****************************************************************************
+\section{Chapitre 1}
+
+Nous quittons le village de \cuanacht{} \trade{e1>R1} pour essayer de comprendre ce qu'il est advenu de \neante{}, \yvain{}, \aubert{}, \erfir{} et \fael{}. Aux \lames{} \trade[, obj SI Forgeron]{e1r1>}\index{Gain!Objet}, un forgeron que connaît \beor{} manie un marteau remarquable que nous ne manquons pas d'acquérir. En traînant \larve{} du côté des restes calcinés des druides, au \conclave{}, on acquiert les «Rites du Menhir» \secret{111}. Et on apprend que la première expédition serait partie vers \tuathan{}. \gain{+1XP}.
+
+% ****************************************************************************
+% ***************************************************************** Chapitre 2 
+% ****************************************************************************
+\section{Chapitre 2}
+
+
+On chemine ensuite vers \blanc{} \trade{e1n1>R1} où du lichen (cristaux de sel) disparaît. On traverse \tordracine{} \trade[, r.VERT]{e2>N2}où on trouve une loge de gardiens-pisteurs, ainsi que le corps de \fael{}, la poitrine percée d'une lance de wyrdacier. Dans sa sacoche, le \fauxgraal{} et un mot indiquant qu'ils se sont séparé, pour augmenter les chances d'aller à \newcamelot{}.
+\quest{Femme de \fael{}}{Aller à \blanc{} pour donner à la femme de \fael{} des nouvelles de son funeste destin.}
+
+Nous sauvons aussi \cosuil{}, une femme qui cherchait un érudit (il vivrait à \boismuraille{}) permettant de comprendre ses notes familiales sur la façon de vaincre les Précurseurs.
+
+Plus loin, à \lacmiroir{} \trade{>E1T1V1}, nous tentons sans succès d'invoquer la \dame{}, mais nous ne sommes sans doute pas assez importants pour elle.
+
+Aux \marchestitan{}, au \templemere{}, \gauvain{} est blessé et la foule, contaminée par la mort rouge, veut le déloger du temple. Il nous confie le fourreau d'excalibur.
+
+\questOK{Fourreau d'Excalibur}{Confié par \gauvain{} qui nous charge d'aller le ramener dans les Tombes de l'Ordre. \gain{+2XP, 4° Restaurer l'Ordre}}{On le fait, ce qui contrarie \palamede{} et \bedivere{}.}
+
+\quest{Sort des Ermites}{Que sont devenus les Ermites du \templemere{} qui ont disparu ?}
+
+Un \bourgr{} proche est le siège de tumultes et de rébellion. Une vielle femme qui porte le collier de \neante{} nous apprend qu'ils sont sont passés deux fois : 5 il y a trois semaine dans un sens, et 2 (\neante{} et \erfir{}) il y a une semaine. Ils avaient perdus l'un des leurs à \tordracine{}.
+
+\questOK{Perdu à \tordracine{}}{Retrouver le membre de la première expédition qui est mort au fond d'une gorge à \tordracine{}}{C'est clairement \fael{}}.
+
+Nous choisissons d'aider \gaheris{}, le chevalier qui a été mandé par \morgane{} pur rétablir l'ordre. Cela se termine par une bataille sanglante qui ramène une sorte de paix, d'où le nouveau nom de \bourgpacif{}.
+
+Un peu au sud, au \premierfort{}, un camp récent mais dévasté, un vaste trou terrifiant (il abriterait une \guivre{}). Quelqu'un, venu de Camelot, a embauché \erfir{} pour y réparer le Menhir. A peine à l'est, le marécage de \noirbourbe{} \trade{e2v1>M1} aurait abrité jadis le \monasteremere{} mais il faut de la richesse ou de la nourriture pour explorer plus avant. Plus au sud, la \flotte{} \trade[, 1XP]{e4t1>M1}\index{Gain!Expérience@Experience} abrite les reste de la flotte qui permit à Arthur de gagner Avalon. La flotte, qui pourrait permettre de quitter l'île, est protégée par un dôme invisible.
+
+\questOK{Flotte oubliée du Temps}{Se renseigner au \cerclelunaire{} sur la flotte protégée par la magie des Druides.}{C'est Merlin qui a protégé les navire qui pourront peut-être servir à partir.}
+
+Et on peut enfin arriver jusqu'à \newcamelot{} \trade[1 XP]{e2>}\index{Gain!Expérience@Experience} qui a subit les ravages du temps. Le Roi Arthur est mort. Nous parlons à \lancelot{}, qui a bien besoin d'aide. Les agissements de \gaheris{} le peinent, mais «on fait pour le mieux»... Les problèmes actuels:
+\begin{itemize}
+\item à l'Ouest: \bors{} a disparu, réglait conflit entre \nidcorbeaux{} et \boismuraille{}.
+\item au Nord: \bedivere{} et \palamede{} sont en mission secrète, \gauvain{} envoyé en renfort.
+\item \agravain{} rendu aux portes de \tuathan{} pour confirmer retour des Précurseurs.
+\item \geraint{} est mort, on attend que les Druides du \cerclelunaire{} élisent son remplaçant.
+\item \lamorak{} est parti enquêter à l'Ouest sur la menace du Wyrd.
+\item \galaad{} a disparu depuis longtemps.
+\end{itemize}
+
+\quest{Reformer la Table Ronde}{Il faut pour cela aider les Chevalier et avancer sur les statuts \texttt{Restaurer l'Ordre} (en avoir 6/8).}
+
+OU BIEN
+
+\quest{Fin de la Table Ronde}{Empêcher les Chevaliers de revenir, liée aux statuts \texttt{Chute de la Chevalerie} (en avoir 6/8).}
+
+Nous avons un peu plus de succès avec \morgane{} qui pourrait nous aider si nous allons chercher pour elle un souvenir (une poupée) sur la plage des \chatoyantes{}. \secret{475} \gain{+2XP}.
+
+\questOK{Tâche pour Morgane}{Aller chercher un souvenir d'enfance dans un tour de la plages des \chatoyantes{}.}{Fait}
+
+% ****************************************************************************
+% **************************************************************** Chapitre 3A 
+% ****************************************************************************
+\section{Chapitre 3A}
+Il s'agit essentiellement d'un aller-retour, en passant par \bourgpacif{}, les \marchestitan{}, \tordracine{} avant de descendre vers \blanc{} et vers le levant par le \premierfort{}, \noirbourbe{} et enfin les \chatoyantes{}. Sur place, on explore le sommet d'une tour branlante malgré l'attrait des sillons étranges dans le sable. Un coffret contient une \poupee{}. \gain{2XP, «Bien Précieux»}. Ici, on rêve d'un masque à trois yeux.
+
+\questOK{Rapporter à Morgane}{Il faut maintenant rapporter la poupée à \morgane{}}{Fait en retournant à \newcamelot{}}
+
+Et nous voici de nouveau à \newcamelot{}. Entrevue avec \morgane, qui reprend la \poupee{} et nous demande de l'aider, nous acceptons. \secret{417} Elle nous confie alors le \fauxgraal{}, en nous disans de nous renseigner auprès de la \dame{}, ou auprès des druides du \cerclelunaire{} en particulier à \amergin{}. \gain{1XP, \magic[1], «Mission au Cercle Lunaire»}.
+
+% ****************************************************************************
+% **************************************************************** Chapitre 4A 
+% ****************************************************************************
+\section{Chapitre 4A}
+
+On part vers le nord du \bourgpacif{}, vers \broch{} \trade[, r.VIO]{e2>O1}. Rencontres avec des voyageurs oniriques puissants. A force de tourner, nous y gagnons \gain{«5° Heureuse Rencontres»}, un Nain que nous écoutons longtemps \secret{238} \gain{1XP, \nour[-2], \terror[3]}. On peut aussi en apprendre plus sur le forgeron \morfran{} qui aurait forgé des chaînes pour les esclavagistes \gain{«3° Successeur de Geraint»}.
+
+A peine à l'Ouest, les deux villages de \bundorca{} et \falfuar{} se partagent un Menhir depuis des temps immémoriaux. Nous aidons à rapatrier tout le monde à Bundorca qui devient \faldorca{} tandis que Falfuar tombe à l'abandon, ce qui crée une famine en attendant qu'on trouve un meilleur havre pour ces gens. N'empêche, on peut toujours aller à la taverne \trade{o1>T2} ou faire des offrandes \trade[si inf 2]{t1>M1}.
+
+Au nord, les \tombesordre{} nous attendent. On effectue une prudente descente dans le puit imposant sans rien trouver d'autre que des ossements, une épée brisée \rich[1]. Il y a aussi \bedivere{} et \palamede{} qui jouent aux cartes et qui sont contrariés que \emph{nous} ramenions le fourraux d'Excalibur \gain{2XP, \rich[4]}.
+
+\quest{Faire parler les Chevaliers}{Pour savoir ce qui s'est passé (ici aux \tombesordre{}). Ils sont tremblants et refusent de parler}.
+
+Un petit passage dans la \murmures{} \trade[, r.VERT]{e2>N2}, essentiellement pour chasser. Il faut commencer à entrer dans la légende (hautes caractéristiques) pour découvrir ses secrets. (PRAGMATISME 3 nous ouvre \gain{\terror[-1], «1° Secret de la Forêt»}.
+
+Il est temps d'aller voir à l'Ouest. On repasse par \falfuar{}, maintenant à l'abandon. Il s'y cache un passage bien dissimulé vers \tordracine{} \nrj[-2], ce qui sera pratique quand le Précurseur qui nous poursuit parfois se montre. Il ne peut pas nous y suivre. Il est possible d'y chasser (r.VERT), ou de piller.
+
+Ensuite nous arrivons au \cerclelunaire{} \trade{e2o1>M1} ou \trade{e2n1>M1}, lieu sacré pour les druides, mais un peu désert. Un vieillard nous explique que l'arbre étrange qui protège la première flotte à la \flotte{} a été érigé par Merlin lui-même, en attendant le temps où les navires pourront être réutilisés \gain{«8° Eclaireur»}.
+
+\quest{Contacter \orrin{} à propos de ces Navires}{\orrin{} pourrait peut-être lever la protection sur les Navires de la \flotte{}, ce qui pourrait permettre de repartir.}
+
+Dans les masures, un partie du groupe \hl{sans \larve{}} peut en apprendre plus sur le problème de la succession de \geraint{}. Un jeune, \breagach{}, et un vieux forgeron, \morfran{}, sont candidats et on peut en savoir plus sur eux à \broch{} ou à \blanc{}, \gain{«1° Successeur de Geraint»}.
+
+\begin{itemize}
+\item \morfran{} se vante d'avoir aidé des gens à échappper à l'esclavage à \broch{}.
+\item \breagach{} a soigné des gens à \blanc{}.
+\end{itemize}
+
+\quest{Succession de Geraint}{En apprendre plus sur les deux candidats.}
+
+Nous rendons visite à l'archidruide \amergin{}, prophète intellectuellement limité. Il révèle notre \fauxgraal{} qui se transforme en boue, mais le vrai serait tout près, dans la \adiante{}. \gain{1XP, \magic[1]}.
+
+% ****************************************************************************
+% ***************************************************************** Chapitre 5 
+% ****************************************************************************
+\section{Chapitre 5}
+
+Où chercher ? Passage à la \croisee{}, 4 routes et une \pierrerancune{}. En essayant de faire du troc (\nrj[-1]), rencontre vieil historien \secret{172} qui s'intéresse à la \pierrerancune{}. Une vieille légende nous semble avoir été vécue... par nous! \gain{\rich[1], 2XP, «7° Mystère Brûlant», «5° Main Secourable»}.
+
+Mais on ne s'arrête pas et on pousse jusqu'à \nidcorbeaux{} \trade{v1>O1}, aux coutumes sombres et dérangeantes. Au marché, \hl{sans \arev{}}, on peut acheter du poisson \trade{o1>N1}. \mordred{} n'est pas disponible pour l'instant. On n'apprend presque rien sur la \tetemorrigan{}, si ce n'est que se sont ses trois aspects qui sont vénérés ici : \nemain{} Dame de la Guerre et du Carnage, \badb{} Dame des Corbeaux et des Prophéties et \macha{}, Dame des Rois et des Pouvoirs Terrestres.
+
+Une première expédition vers la \adiante{} tourne plutôt mal. Avancer à l'aveuglette ne conduit qu'à une mort presque certaine. Mais les rêves permettent de savoir qu'il faut éviter la puanteur et le froid, avancer dans l'obscurité, échapper à un nuage de poussière en glissant le long d'une étrange langue. Le calice est en direction des flots mugissants...
+
+Il est temps d'explorer à nouveau la \adiante{}. On y trouve une tour penchée avec un crâne écarlate qui indique la mort rouge \gain{1XP, «5° Tréfond»}, un vieux tonnelet rempli de pièces \gain{1XP,\rich[5], «2° Tréfond»} et le \graal{} \gain{3XP, \magic[3], «3° Tréfond»}, une bataille fait rage pour nous le prendre. La \dame{}, blessée, nous protège en nous rendant invisibles. Nous la défendons contre des soudards. \gain{1XP,\rich[1]}
+
+\quest{Amener \graal{} à \tuathan{}}{
+  \begin{itemize}
+  \item Demander de l'aide à \orrin{} qui est au sud de \loincomtat{}.
+  \item Retrouver \neante{} dans la \murmures{}.
+  \end{itemize}
+}
+
+\quest{Relique des Précurseurs}{Retrouver le \masque{} dans les \chatoyantes{}.}
+
+\printindex
+
+\end{document}

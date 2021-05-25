@@ -3,7 +3,7 @@ digraph TG153 {
         node [shape=record]
         Entrée;
         {
-            node [label="Fin"] end2; end5; end10; end173; end181; Sortie;
+            node [label="Fin"] end2; end5; end10; /*//Tr5// end173;*/ end181; Sortie;
         }
         {
             node [label="Fin, suffoque", width=2, style="filled", fillcolor=red]; end16;
@@ -18,7 +18,7 @@ digraph TG153 {
 
         {
             node [label="(16) Plus Ox",width=2,color=red]
-            _1out; _3out; _6out; _8out; _9out; _11out; _14out; _15out; _17out; _18out; _19out; _21out; _22out; _24out; _25out;
+            _1out; _3out; _6out; _8out; _9out; _11out; _14out; _15out; /*//RP// _17out;*/ _18out; _19out; _22out; _24out; _25out; /*//Tr4//_21out*/
         }
 
         _1up [label="pente douce"];
@@ -34,8 +34,8 @@ digraph TG153 {
         _6lig [label="caverne éclairée"];
         _6dus [label="tunnel poussière"];
 
-        _7no [label="PAS s22 «Talisman Brillant»"];
-        _7yes [label="s22 «Talisman Brillant»"];
+        //RP// _7no [label="PAS s22 «Talisman Brillant»"];
+        //RP// _7yes [label="s22 «Talisman Brillant»"];
         
         _8tun [label="tunnel de mousse"];
         
@@ -52,8 +52,8 @@ digraph TG153 {
         _11rid [label="rideau mousse"];
         _11mou [label="mousse vers calcaire"];
 
-        _12vent [label="Suivre bruit vent"];
-        _12eni [label="Affronter «Poseur Enigme»\nSI Ox sup à 2, -1Ox"];
+        //Tr5// _12vent [label="Suivre bruit vent"];
+        //Tr5// _12eni [label="Affronter «Poseur Enigme»\nSI Ox sup à 2, -1Ox"];
         
         _13treN [label="PAS 3° Tréfond"];
         _13treY [label="DÉJÀ 3° Tréfond"];
@@ -67,9 +67,9 @@ digraph TG153 {
         _15cre [label="crevasse sombre"];
         _15mou [label="zone mousse"];
 
-        _17pill [label="PAS 3° «Rêve et Prophéties»\npiller"];
-        _17sta [label="stalactites"];
-        _17dus [label="vers nuage poussière"];
+        //RP// _17pill [label="PAS 3° «Rêve et Prophéties»\npiller"];
+        //RP// _17sta [label="stalactites"];
+        //RP// _17dus [label="vers nuage poussière"];
 
         _18lost [label="combat perdu"];
         //_18gal [label="galerie insectes morts"];
@@ -82,12 +82,11 @@ digraph TG153 {
         _19pes [label="empeste la mort"];
         _19tun [label="relief accidenté"];
 
-        _20treN [label="PAS 1° t=Tréfond"];
-        _20treY [label="DÉJÀ 1° Tréfond"];
+        //Tr5// _20treN [label="PAS 1° t=Tréfond"];
+        //Tr5// _20treY [label="DÉJÀ 1° Tréfond"];
         
         _22sta [label="passage stable"];
         
-        _23gal [label="courant froid"];
         _23fir [label="premier couloir"];
         _23sec [label="second couloir"];
 
@@ -114,25 +113,25 @@ digraph TG153 {
     }
     {
         node [shape=box]
-        n1 [label="(1) espace exigu"];
+        n1 [label="(1) espace exigu", style=filled, color=yellow];
         n2 [label="(2) test PRUD"];
         n3 [label="(3) cul de sac"];
-        n5 [label="(5) Tréfonds\nCadran Ox sur 6"];
+        n5 [label="(5) Tréfonds\nCadran Ox sur 6", style=filled, color=yellow];
         n6 [label="(6) avance prudente"];
-        n7 [label="(7) Talisman usé\ns21 «Talisman Terni»\n3° «Rêves et Prophétie»\n+2T, 1XP"];
+        //RP// n7 [label="(7) Talisman usé\ns21 «Talisman Terni»\n3° «Rêves et Prophétie»\n+2T, 1XP"];
         n8 [label="(8) mousse jaunâtre\n[Ailei]-3E «feuilles voyageur»"];
-        n9 [label="(9) insectes au sol"];
+        n9 [label="(9) insectes au sol", style=filled, color=yellow];
         n10 [label="(10) trou\nCadran Ox sur 6"];
         n11 [label="(11) champignons hallu\n[Larve] -1E -2T"];
-        n12 [label="(12) Poseur d'Enigme"];
+        //Tr5// n12 [label="(12) Poseur d'Enigme"];
         n13 [label="(13) mer derrière parois"];
         n14 [label="(14) tunnel calcaire"];
         n15 [label="(15) croisement\nPRUD ou -1V"];
-        n17 [label="(17) cadavres"];
+        //RP// n17 [label="(17) cadavres"];
         n18 [label="(18) air glacial\n VIOLETTE"];
         n19 [label="(19) nuage poussière"];
-        n20 [label="(20) Stalactites"];
-        n21 [label="(21) Rangée Statues\n2XP, tréf 4", width=2, style="filled", fillcolor=green];
+        //Tr5// n20 [label="(20) Stalactites"];
+        //Tr4// n21 [label="(21) Rangée Statues\n2XP, tréf 4", width=2, style="filled", fillcolor=green];
         n22 [label="(22) roches traîtres\nPRUD -1V"];
         n23 [label="(23) guirlande\nCadran Ox sur 6"];
         n24 [label="(24) Colonnes fresques\n-2T"];
@@ -141,11 +140,11 @@ digraph TG153 {
     {
         node [shape=ellipse]
         s132 [label="[132] Gris «Soudards»"];
-        s173 [label="[173] Sac à dos, carte\n+1XP, 2 objets, 1° Tréfond", width=2, style="filled", fillcolor=green];        
+        //Tr5// s173 [label="[173] Sac à dos, carte\n+1XP, 2 objets, 1° Tréfond", width=2, style="filled", fillcolor=green];        
         s181 [label="[181] Tour ancienne penchée\nPAS 5° Tréfond ? => +1XP\n+ 5° Tréfond", width=2, style="filled", fillcolor=green];
         s321 [label="[321] Caverne Rituels Précurseur\n+3XP, +3Ma\ns7 GRAAL, 3° Tréfond", width=2, style="filled", fillcolor=green];
         s327 [label="[327] pente boueuse\nmare croupie\n+1XP, +5R, 2° Tréfond", width=2, style="filled", fillcolor=green];
-        s366 [label="[366]"];
+        //RP// s366 [label="[366]"];
         s412 [label="[412] Bataille fait Rage"];
         s414 [label="[414] Protégés par Dame Lac\nblessée, +1T"];
         s485 [label="[485] «La coupe de résoudra RIEN»\naller Tuathan ?"];
@@ -153,18 +152,18 @@ digraph TG153 {
         s484 [label="[484] Chapitre END\n+1XP, +1R\n 3 TÂCHES", width=2, style="filled", fillcolor=green];
 
     }
-    subgraph cluster_0 {
-    width=5;
-    color=blue;
+    // subgraph cluster_0 {
+//     width=5;
+//     color=blue;
         
-    n12 -> _12vent -> n20;
-    n12 -> _12eni -> n12;
+//     n12 -> _12vent -> n20;
+//     n12 -> _12eni -> n12;
     
-    n20 -> _20treN -> s173 -> end173;
-    n20 -> _20treY -> n12;
+//     n20 -> _20treN -> s173 -> end173;
+//     n20 -> _20treY -> n12;
     
-    label = "1° Tréfond";
-}
+//     label = "1° Tréfond";
+// }
 subgraph cluster_1 {
     width=5;
     color=blue;
@@ -180,14 +179,14 @@ subgraph cluster_2 {
     
     label ="3° Tréfond";
 }
-subgraph cluster_3 {
-    width=5;
-    color=blue;    
-    _10fis  -> n21 [label="-1Ox"];
-    n21 -> _21out [label="+2T,-1E"];
-    //n21 -> n18 [label="-1Ox"];
-    label = "4° Tréfond";
-}
+// subgraph cluster_3 {
+//     width=5;
+//     color=blue;    
+//     _10fis  -> n21 [label="-1Ox"];
+//     n21 -> _21out [label="+2T,-1E"];
+//     //n21 -> n18 [label="-1Ox"];
+//     label = "4° Tréfond";
+// }
 subgraph cluster_4 {
     width=5;
     color=blue;
@@ -196,7 +195,23 @@ subgraph cluster_4 {
     s181 -> end181;
 
     label= "5° Tréfond";
-    }
+}
+
+// subgraph cluster_5 {
+//         style=filled;
+//         color=yellow;
+
+//         n7 -> _7no -> n17;
+//         n7 -> _7yes -> s366;
+        
+//         n17 -> _17out [label="+4T,-2E"];
+//         n17 -> _17pill -> n7;
+//         n17 -> _17sta;
+//         n17 -> _17dus;
+        
+        
+//         label = "3° Rêve et Prophétie";
+// }
     
     Entrée -> traverser_mer -> n2;
     Entrée -> ravine -> n5;
@@ -232,8 +247,7 @@ subgraph cluster_4 {
     n6 -> _6lig -> n10;
     n6 -> _6dus -> n19;
 
-    n7 -> _7no -> n17;
-    n7 -> _7yes -> s366;
+    
 
     n8 -> _8out [label="+1T,-1E"];
     n8 -> _9gal;
@@ -244,7 +258,7 @@ subgraph cluster_4 {
     n9 -> _9rac;
     _9rac -> n1 [label="-1Ox"];
     n9 -> _9up -> n18;
-    n9 -> _9dow; _9dow -> n12;
+    n9 -> _9dow; //Tr5// _9dow -> n12;
     
     n10 -> _10up [label="-1E"]; _10up -> end10;
     n10 -> _10gal; _10gal -> n18 [label="-1Ox"];
@@ -257,7 +271,7 @@ subgraph cluster_4 {
     n11 -> _11mou; _11mou -> n14 [label="-1Ox"];
 
 
-    n12 -> _15ins;
+    //Tr5// n12 -> _15ins;
 
 
     n13 -> _13treN;
@@ -285,26 +299,24 @@ subgraph cluster_4 {
     n15 -> _15cre; _15cre -> n1 [label="-1Ox"];
     n15 -> _15mou -> n8;
 
-    n17 -> _17out [label="+4T,-2E"];
-    n17 -> _17pill -> n7;
-    n17 -> _17sta; _17sta -> n24 [label="-1Ox"];
-    n17 -> _17dus -> n19;
+    //RP// _17sta -> n24 [label="-1Ox"];
+    //RP// _17dus -> n19;
     
     n18 -> _18out [label="+2T,-1E"];
     n18 -> _18lost; _18lost -> end16 [label="+2T,-1E"];
     n18 -> _15ins; //_18gal -> n9 [label="-1Ox"];
-    n18 -> _18pue; _18pue -> n21 [label="-1Ox"];
+    n18 -> _18pue; //Tr4// _18pue -> n21 [label="-1Ox"];
     n18 -> _18cha -> n23;
     n18 -> _18col -> n10;
 
     n19 -> _19out [label="+3T,-2E"];
     n19 -> _19dow; _19dow -> n24 [label="-1Ox"];
     n19 -> _19cal; _19cal -> n22 [label="-1Ox"];
-    n19 -> _19pes -> n17;
+    n19 -> _19pes; //RP// _19pes -> n17;
     n19 -> _19tun -> n6;
 
     // n21 -> _21out [label="+2T,-1E"];
-    n21 -> n18 [label="-1Ox"];
+    //Tr4// n21 -> n18 [label="-1Ox"];
 
     n22 -> _22out [label="+3T,-2E"];
     n22 -> _22sta; _22sta -> n14 [label="-1Ox"];
@@ -316,7 +328,7 @@ subgraph cluster_4 {
 
     n24 -> _24out [label="+4T,-2E"];
     n24 -> _24gro -> n25;
-    n24 -> _24odo -> n17;
+    n24 -> _24odo; //RP// _24odo -> n17;
 
     n25 -> _25ch5Y -> n13;
     n25 -> _25ch5N [label="-1Ox"];
