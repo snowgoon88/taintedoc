@@ -1,7 +1,15 @@
-all: campagne adiante
+all: campagne adiante poster
 
-campagne:
+campagne: campagne.tex
 	latexmk -pdf campagne.tex
 
-adiante:
+adiante: mer_adiante.gv
 	dot -Tpdf mer_adiante.gv -o mer_adiante.pdf
+
+poster: poster.tex
+	latexmk -pdf poster.tex
+
+web: poster campagne adiante
+	mv campagne.pdf docs
+	mv mer_adiante.pdf docs
+	mv poster.pdf docs
