@@ -1,0 +1,542 @@
+\documentclass[11pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[OT1]{fontenc}
+%\usepackage{fullpage}
+\usepackage[paperheight=73cm, paperwidth=52cm,top=0.5cm, bottom=0.5cm, left=0.5cm, right=0.5cm, showframe]{geometry}
+\usepackage{hyperref}
+\usepackage{marginnote}
+
+%% \usepackage{tensor}
+%% \usepackage{enumitem}
+%% \usepackage{outlines}
+%% \usepackage{ulem}
+
+\usepackage{makeidx}
+\usepackage{xparse}
+
+\usepackage{fontawesome5}
+\usepackage{awesomebox}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{amssymb}
+\usepackage{bm} %boldmath
+\usepackage{soul}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+%% Activate externalization to separate PDF for every image
+\usetikzlibrary{external}
+\tikzexternalize 
+%% *****************************************************************************
+%% ********************************************************************* questOK
+%% *****************************************************************************
+\newtcolorbox{questbox}{colback=violet!10,colframe=white,left skip=0.2\textwidth}
+\newcommand{\quest}[2]{%
+  {\footnotesize
+    \begin{questbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[violet]{2pt}{\faQuestionCircle[regular]}{violet}
+      #2
+    \end{awesomeblock}
+  \end{questbox}
+  }
+}
+
+\newtcolorbox{questOKbox}{colback=green!10,colframe=white,segmentation style={draw=violet,solid},left skip=0.2\textwidth}
+\newcommand{\questOK}[3]{%
+  {\footnotesize
+  \begin{questOKbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[green]{2pt}{\faQuestionCircle}{green}
+      {
+        #2
+
+        {\color{green}\vspace{2mm}\hrule\vspace{2mm}}
+
+        $\leadsto$ #3
+      }
+    \end{awesomeblock}
+  \end{questOKbox}
+  }
+}
+%% *****************************************************************************
+%% *****************************************************************************
+%% *****************************************************************************
+\newcommand{\nrj}[1][]{{\color{teal} #1\faBolt}}
+\newcommand{\nour}[1][]{{\color{olive} #1\faDrumstickBite}}
+\newcommand{\rich}[1][]{{\color{lightgray} #1\faCoins}}
+\newcommand{\rep}[1][]{{\color{orange} #1\faGrin}}
+\newcommand{\magic}[1][]{{\color{violet} #1\faSun}}
+\newcommand{\life}[1][]{{\color{red} #1\faHeart}}
+\newcommand{\terror}[1][]{{\color{black} #1\faSurprise}}
+
+\newtcolorbox{tradebox}{colback=yellow!10,colframe=white}
+%% *****************************************************************************
+%% Define a macro parsing its input argument one character at a time
+
+%% needed in Tex to be used in macro name
+\makeatletter
+
+\newcounter{@tradeitems}
+%% print ', ' if already an item before
+\newcommand\@tradeseparator{%
+  \ifnum\value{@tradeitems}>0 {,} \fi
+  \addtocounter{@tradeitems}{1}
+}
+
+%% e.E: Energie, n/N: NOUR, o/O: RICH, r/R: REP, m/M: MAGIC
+%% \trade[option put after]{combinaison de eXnXoXrXmX > EXNXOXRXMX}
+\newcommand\trade[2][]{%
+  \setcounter{@tradeitems}{0}
+  %\marginnote[right]{[\@mytrade#2\@nnil#1]}
+  [\@mytrade#2\@nnil#1]
+}
+
+\def\@mytrade#1{%
+  %% if #1 == \@nil do nothing and stop expanding
+  %% sinon utilise \mymacro@char@#1 et continue la suite
+  \ifx\@nnil#1\relax\else
+  \@nameuse{mytrade@char@#1\expandafter}%
+  \fi
+}
+%% Définit un "faiseur de macro"
+%% \defcharcode#1 définira une macro \mytrade@char@#1 qui finira par
+%% appeler récursirvement \@mytrade
+\def\defcharcode#1{%
+    \@namedef{mytrade@char@#1}%
+}
+%% e: use NRJ
+\defcharcode{e}#1{%
+  \@tradeseparator%
+  \nrj[-#1]%
+  \@mytrade
+}
+%% n: use NOUR
+\defcharcode{n}#1{% reads further character after q
+  \@tradeseparator%  
+  \nour[-#1]%
+  \@mytrade
+}
+%% o: use OR
+\defcharcode{o}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[-#1]%
+  \@mytrade
+}
+%% r: use REP
+\defcharcode{r}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[-#1]%
+  \@mytrade
+}
+%% m: use MAG
+\defcharcode{m}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[-#1]%
+  \@mytrade
+}
+%% v: use LIFE
+\defcharcode{v}#1{% reads further character after q
+  \@tradeseparator%
+  \life[-#1]%
+  \@mytrade
+}
+%% t: use TERROR
+\defcharcode{t}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[#1]%
+  \@mytrade
+}
+\defcharcode{>}{%
+  \setcounter{@tradeitems}{0}
+   $\Rightarrow$ 
+  \@mytrade
+}
+%% E: gain NRJ
+\defcharcode{E}#1{%
+  \@tradeseparator%
+  \nrj[#1]\index{Gain!Energie}%
+  \@mytrade
+}
+%% N: gain NOUR
+\defcharcode{N}#1{% reads further character after q
+  \@tradeseparator%
+  \nour[#1]\index{Gain!Nourriture}% 
+  \@mytrade
+}
+%% O: gain OR
+\defcharcode{O}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[#1]\index{Gain!Richesse}%
+  \@mytrade
+}
+%% R: gain REP
+\defcharcode{R}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[#1]\index{Gain!Reputation}%
+  \@mytrade
+}
+%% M: gain MAG
+\defcharcode{M}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[#1]\index{Gain!Magie}%
+  \@mytrade
+}
+%% V: gain LIFE
+\defcharcode{V}#1{% reads further character after q
+  \@tradeseparator%
+  \life[#1]\index{Gain!Vie}%
+  \@mytrade
+}
+%% T: gain Terror
+\defcharcode{T}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[-#1]\index{Gain!Terreur}%
+  \@mytrade
+}
+
+
+\makeatother
+%% *****************************************************************************
+
+%% *****************************************************************************
+%% ****************************************************************** secret/loc
+%% *****************************************************************************
+\newcommand{\loc}[1]{%
+  (lieu #1)
+}
+\newcommand{\secret}[1]{%
+  [secret #1]
+}
+%% using xparse
+%% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
+\NewDocumentCommand{\lieu}{m O{XX} o}{%
+  \underline{#1} (#2)\index{\IfNoValueTF{#3}{#1}{#3@#1}}%
+}
+
+\def\adiante{\lieu{Mer d'Adiante}[153]}
+\def\blanc{\lieu{Blanc-Lichen}[107]}
+\def\boismuraille{\lieu{Bois-Muraille}}
+\def\bosquet{\lieu{Bosquet des Chasseurs}[102]}
+\def\bourgr{\lieu{Bourg Pestiféré}[138,142][Bourg]}
+\def\bourgpacif{\lieu{Bourg Pacifié}[142][Bourg]}
+\def\broch{\lieu{Broch Cruach}[136]}
+\def\bundorca{\lieu{Bundorca}[135,148]}
+\def\camelot{\lieu{Camelot}}
+\def\cerclelunaire{\lieu{Cercle Lunaire}[133]}
+\def\chatoyantes{\lieu{Étendues Chatoyantes}[157][Etendues Chatoyantes]}
+\def\conclave{\lieu{Conclave Calciné}[104][Conclave Calcine]}
+\def\croisee{\lieu{Croisée}[152][Croisee]}
+\def\cuanacht{\lieu{Cuanacht}[101]}
+\def\faldorca{\lieu{Faldorca}[148]}
+\def\falfuar{\lieu{Falfuar}[134,147]}
+\def\flotte{\lieu{Flotte d'Épaves}[119][Flotte d'Epaves]}
+\def\foire{\lieu{Foire du Guerrier}[103]}
+\def\hospice{\lieu{Hospice Insulaire}[109]}
+\def\lacmiroir{\lieu{Lac Miroir}[113]}
+\def\lames{\lieu{Lames de la Mélancholie}[105][Lames de la Melancholie]}
+\def\larvebois{\lieu{Larvebois}[108]}
+\def\loincomtat{\lieu{Loincomtat}}
+\def\newcamelot{\lieu{Nouvelle Camelot}[190]}
+\def\marchestitan{\lieu{Marches du Titan}[115]}
+\def\monasteremere{\lieu{Monastère de la Toute-Mère}[140][Monastere de la Toute-Mere]}
+\def\murmures{\lieu{Forêt des Murmures}[155][Foret des Murmures]}
+\def\nidcorbeaux{\lieu{Nid-de-Corbeaux}[160]}
+\def\noirbourbe{\lieu{Noirebourbe}[140]}
+\def\premierfort{\lieu{Premier Fort}[117]}
+\def\templemere{\lieu{Temple de la Toute-Mère}[115][Temple de la Toute-Mere]}
+\def\tombesordre{\lieu{Tombes de l'Ordre}[154]}
+\def\tordracine{\lieu{Tordracine}[114]}
+\def\tuathan{\lieu{Tuathan}}
+
+%%\newcommand{\perso}[1]{\textbf{#1}}
+%% using xparse
+%% 1=Nom, [2=key pour index sans accent]
+\NewDocumentCommand{\perso}{m o}{%
+  \textbf{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\agravain{\perso{Agravain}}
+\def\amergin{\perso{Amergin}}
+\def\arev{\perso{Arev}}
+\def\aubert{\perso{Aubert}}
+\def\badb{\perso{Badb}}
+\def\bedivere{\perso{Bedivère}[Bedivere]}
+\def\beor{\perso{Béor}[Beor]}
+\def\bors{\perso{Bors}}
+\def\breagach{\perso{Bréagach}[Breagach]}
+\def\cosuil{\perso{Cosuil}}
+\def\dame{\perso{Dame du Lac}}
+\def\erfir{\perso{Erfyr}}
+\def\fael{\perso{Faël}[Fael]}
+\def\gaheris{\perso{Gaheris}}
+\def\galaad{\perso{Galaad}}
+\def\gauvain{\perso{Gauvain}}
+\def\geraint{\perso{Geraint}}
+\def\larve{\perso{Larve}}
+\def\lamorak{\perso{Lamorak}}
+\def\lancelot{\perso{Lancelot}}
+\def\macha{\perso{Macha}}
+\def\mordred{\perso{Mordred}}
+\def\morfran{\perso{Morfran}}
+\def\morgane{\perso{Morgane}}
+\def\neante{\perso{Néante}[Neante]}
+\def\nemain{\perso{Nemain}}
+\def\orrin{\perso{Orrin}}
+\def\palamede{\perso{Palamède}[Palamede]}
+\def\yvain{\perso{Yvain}}
+
+%\newcommand{\art}[1]{\texttt{#1}}
+\NewDocumentCommand{\art}{m o}{%
+  \texttt{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\graal{\art{Graal}}
+\def\fauxgraal{\art{Faux Graal}}
+\def\masque{\art{Masque Funéraire}[Masque Funeraire]}
+\def\guivre{\art{Guivre}}
+\def\poupee{\art{Poupée de Paille}[Poupee de Paille]}
+\def\pierrerancune{\art{Pierre des Rancunes}}
+\def\tetemorrigan{\art{Tête de Morrigan}[Tete de Morrigan]}
+
+\newcommand{\gain}[1]{{\color{red}\textbf{[#1]}}}
+
+\newcommand{\unk}[1]{{\color{orange}(#1)}}
+
+% ****************************************************************************
+% ***************************************************************** TIKZ Macro 
+% ****************************************************************************
+% name,pos,title, trade, done, todo
+\newlength{\cardsize}
+\setlength{\cardsize}{3.5cm}
+\newlength{\linkhor}
+\setlength{\linkhor}{3.5cm}
+\newlength{\linkver}
+\setlength{\linkver}{3.0cm}
+
+\newcommand{\kzcard}[6]{%
+  %\begin{scope}[text width=\cardsize]
+
+  \path[text width=\cardsize] {#2} node[matrix,fill=green!10,rounded corners] (#1)
+       {
+      #3;\\
+      %%\node[draw=black] (title) {#3};\\
+      \node (trade) {#4}; \draw (node cs:name=trade,anchor=south west) -- (node cs:name=trade,anchor=south east);\\
+      \node (done) {#5}; \\
+      \node (todo) {{\color{red}\bm{$\leadsto$} #6}};\\
+    };
+   %\end{scope}
+}
+%% using xparse
+%% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
+\RenewDocumentCommand{\lieu}{m O{XX} o}{%
+  %%\underline{#1} (#2)\index{\IfNoValueTF{#3}{#1}{#3@#1}}%
+  \node[draw=black,text width=\cardsize] (title) {\textbf{#1} (#2)};
+  %%(title.north) \node[ellipse,draw,above=3mm,text width=8mm,align=center] (num) {#2}
+}
+\newcommand{\kzcardunk}[6]{%
+  %\begin{scope}[text width=\cardsize]
+
+  \path[text width=\cardsize] {#2} node[matrix,fill=yellow!10,rounded corners] (#1)
+       {
+      #3;\\
+      %%\node[draw=black] (title) {#3};\\
+      \node (trade) {#4}; \draw (node cs:name=trade,anchor=south west) -- (node cs:name=trade,anchor=south east);\\
+      \node (done) {PAS VISITÉ}; \\
+      \node (todo) {{\color{red}\bm{$\leadsto$} #6}};\\
+    };
+   %\end{scope}
+}
+
+%% using xparse
+%% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
+\RenewDocumentCommand{\lieu}{m O{XX} o}{%
+  %%\underline{#1} (#2)\index{\IfNoValueTF{#3}{#1}{#3@#1}}%
+  \node[draw=black,text width=\cardsize] (title) {\textbf{#1} (#2)};
+  %%(title.north) \node[ellipse,draw,above=3mm,text width=8mm,align=center] (num) {#2}
+}
+
+\newcommand{\addmenhir}[1]{%
+  \path (#1.north east) node {\pgfimage[height=1cm]{Images/menhir_icon_tg}};
+}
+\newcommand{\addmeet}[2]{%
+  \filldraw[fill=#2,line width=2pt]  (#1.north west) circle[radius=3mm];
+}
+
+\newcommand{\nodeunk}[2]{%
+  \path #2 node[fill=yellow!10] (n#1) {#1};
+}
+
+\newcommand{\mklinkSN}[2]{%
+  \draw[line width=2mm] (#1.south) -- (#2.north);
+}
+\newcommand{\mklinkNS}[2]{%
+  \draw[line width=2mm] (#1.north) -- (#2.south);
+}
+\newcommand{\mklinkWE}[2]{%
+  \draw[line width=2mm] (#1.west) -- (#2.east);
+}
+\newcommand{\mklinkEW}[2]{%
+  \draw[line width=2mm] (#1.east) -- (#2.west);
+}
+
+
+%% %% decorate card using character parsing of argument
+%% %% needed in Tex to be used in macro name
+%% \makeatletter
+
+%% \def\addmeet#1{%
+%%   %% if #1 == \@nil do nothing and stop expanding
+%%   %% sinon utilise \mymacro@char@#1 et continue la suite
+%%   \ifx\@nnil#1\relax\else
+%%   \@nameuse{@decorate@char@#1\expandafter}%
+%%   \fi
+%% }
+%% \def\@decorate@char@M{% Menhir
+%%   \path (bouh2.north east) node {\pgfimage[height=1cm]{Images/menhir_icon_tg}};
+%% }
+%% \makeatother
+% ****************************************************************************
+% ********************************************************************** title
+% ****************************************************************************
+\title{%
+Une carte d'Avalon
+}
+
+\makeindex
+%% *****************************************************************************
+%% ******************************************************************** document
+%% *****************************************************************************
+\begin{document}
+
+%% Est-ce que tu peux faire un tableau avec les cartes-région : 1e
+%% colonne numéro, 2e nom du lieu, 3e effet de la carte (1 Nour contre
+%% 1 Rich par ex), 4e ce qu'on y a fait en très résumé, 5e ce qu'il y
+%% reste à faire et pourquoi on ne l'a pas fait. Enfin, si t'as l'envie
+%% et le temps.
+
+
+\begin{tikzpicture}
+  \path node[anchor=center] {\pgfimage[width=50cm]{Images/map_tg}};
+  %\draw[help lines] (-40,-40) grid[step=10] (40,40);
+  
+
+  \kzcard{cuanacht}{(-5,-20)}{\cuanacht{}}{\trade{e1>R1}}{Partir}{Explorer avant de finir hachés menu}
+  \addmenhir{cuanacht}
+
+  \kzcard{lames}{(cuanacht.south) ++(0,-2\linkver)}{\lames{}}{\trade[obj]{e1r1>}}{Pris marteau}{}
+  \mklinkSN{cuanacht}{lames}
+  
+  \kzcardunk{bosquet}{(-2,-12)}{\bosquet{}}{\trade[, r.VERT]{e2>N2}}{}{}
+  \mklinkNS{cuanacht}{bosquet}
+
+  \nodeunk{106}{(bosquet.west) ++(-\linkhor,0)}
+  \mklinkWE{bosquet}{n106}
+  
+  \kzcardunk{foire}{(cuanacht.west) ++(-\linkhor,0)}{\foire{}}{\trade[1XP]{e4v1>}}{}{}
+  \mklinkWE{cuanacht}{foire}
+  
+  \path (foire.west) ++(-\linkhor,0) node[fill=yellow!10] (n118) {118};
+  \mklinkWE{foire}{n118}
+  
+  \kzcardunk{larvebois}{(lames.west) ++(-\linkhor,0)}{\larvebois{}}{Explorer}{}{}
+  \mklinkSN{foire}{larvebois}
+  \mklinkWE{lames}{larvebois}
+  
+  \path (larvebois.west) ++(-\linkhor,0) node[fill=yellow!10] (n120) {120};
+  \mklinkWE{larvebois}{n120}
+  
+  \kzcard{conclave}{(cuanacht.east) ++(1.6\linkhor,0)}{\conclave{}}{}{«Rites du Menhir»}{}
+  \mklinkEW{cuanacht}{conclave}
+  \addmeet{conclave}{gray}
+
+  \kzcardunk{hospice}{(6,-27)}{\hospice{}}{\trade{e1o1>V3}}{}{}
+  \mklinkSN{conclave}{hospice}
+
+  \kzcard{blanc}{(conclave.north) ++(1,1.5\linkver)}{\blanc{}}{\trade{e1n1>R1}}{Lichen disparaît}{Voir femme \fael{}, passé \breagach{}}
+  \mklinkNS{conclave}{blanc}
+  \mklinkWE{blanc}{bosquet}
+  \addmeet{blanc}{blue}
+  \addmenhir{blanc}
+
+  \kzcard{premierfort}{(9,-7)}{\premierfort{}}{}{\guivre{}, réparation Menhir}{Mieux explorer le camps}
+  \mklinkEW{blanc}{premierfort}
+  \addmeet{premierfort}{violet}
+
+  \kzcard{flotte}{(9,-21)}{\flotte{}}{\trade[, 1XP]{e4t1>M1}}{Flotte protégée par Merlin}{Remettre la Flotte en état}
+  \mklinkSN{premierfort}{flotte}
+  
+  \kzcard{noirbourbe}{(premierfort.east) ++(1.4\linkhor,-4)}{\noirbourbe{}}{\trade{e2v1>M1}}{}{Y chercher le Monastère de la Toute-Mère ?}
+  \mklinkEW{premierfort}{noirbourbe}
+  \addmenhir{noirbourbe}
+
+  \kzcard{chatoyantes}{(noirbourbe.east) ++(1.2\linkhor,-1.5)}{\chatoyantes{}}{\trade{e2>T1}}{Récupère Poupée}{Autre Relique (masque)?}
+  \mklinkEW{noirbourbe}{chatoyantes}
+  
+  \kzcard{tordracine}{(3,-2)}{\tordracine{}}{\trade[, r.VERT]{e2>N2}}{\fael{}, \fauxgraal{}, \cosuil{}}{}
+  \mklinkNS{blanc}{tordracine}
+
+  \kzcard{lacmiroir}{(tordracine.west) ++(-\linkhor,0)}{\lacmiroir{}}{\trade{>E1T1V1}}{\dame{} pas invoquée}{}
+  \mklinkWE{tordracine}{lacmiroir}
+  \mklinkSN{lacmiroir}{bosquet}
+
+  \kzcard{marchestitan}{(tordracine.east) ++(0.9\linkhor,1)}{\marchestitan{}}{Explorer}{Temple de la Toute-Mère, \gauvain{} blessé}{}
+  \mklinkEW{tordracine}{marchestitan}
+  \mklinkSN{marchestitan}{premierfort}
+  \addmenhir{marchestitan}
+
+  \kzcard{bourgpacif}{(14,0)}{\bourgpacif{}}{}{Pacifie avec \gaheris{}, info sur 1° Expédition}{}
+  \mklinkEW{marchestitan}{bourgpacif}
+  \addmeet{bourgpacif}{blue}
+  \filldraw[fill=gray,line width=2pt] (bourgpacif.north west) ++(3mm,0) arc[radius=3mm, start angle=0, end angle=180] -- cycle;
+
+  \kzcard{newcamelot}{(bourgpacif.east) ++(1.5\linkhor,-3)}{\newcamelot{}}{\trade[1 XP]{e2>}}{\lancelot{} et pb de Table Ronde, \morgane{} récupère Poupée}{Aider ou Détruire Table Ronde ?}
+  \mklinkEW{bourgpacif}{newcamelot}
+
+  \kzcard{broch}{(bourgpacif.north) ++(3,2\linkver)}{\broch{}}{\trade[, r.VIO]{e2>O1}}{Rencontres oniriques, passé de \morfran{}}{autres rencontres, passé \morfran{}}
+  \mklinkNS{bourgpacif}{broch}
+
+  \kzcard{faldorca}{(9.5,7.5)}{\faldorca{}}{\nrj[5] tracter Menhir}{Rapatrier tous les habitants}{Trouver Havre pour habitants car famine}
+  \mklinkWE{broch}{faldorca}
+  \addmeet{faldorca}{blue}
+
+  \kzcard{falfuar}{(faldorca.west) ++(-1.5\linkhor,1)}{\falfuar{}}{\nrj[5] tracter Menhir}{Habitant vers Faldorca}{}
+  \mklinkWE{faldorca}{falfuar}
+  %% passage secret
+  \draw[line width=2mm,dashed,->,gray] (falfuar.south) to (tordracine.north);
+
+  %% connecting 2 Menhirs
+  \draw[line width=2mm, dotted, color=gray] (faldorca.north east) to [out=135, in=45] (falfuar.north east);
+  \addmenhir{faldorca}
+  \addmenhir{falfuar}
+
+  \kzcard{murmures}{(18.5,18.5)}{\murmures{}}{\trade[, r.VERT]{e2>N2}}{}{Chercher \neante{}, explorer Carac$\,>3$}
+  \mklinkNS{broch}{murmures}
+  \addmenhir{murmures}
+  
+  \kzcard{tombesordre}{(faldorca.north) ++(0,2\linkver)}{\tombesordre{}}{\trade[Tombe]{m2r2>}}{Rend Fourraux Excalibur}{Faire parler \bedivere{} et \palamede{}, Fond du Puit}
+  \mklinkNS{faldorca}{tombesordre}
+  \mklinkWE{murmures}{tombesordre}
+
+  \kzcard{cerclelunaire}{(-5,8)}{\cerclelunaire{}}{\trade{e2o1>M1} ou \trade{e2n1>M1}}{Dévoile \fauxgraal{}}{Succession de \geraint{}}
+  \mklinkWE{falfuar}{cerclelunaire}
+
+  \nodeunk{132}{(cerclelunaire.west) ++(-\linkhor,0)}
+  \mklinkWE{cerclelunaire}{n132}
+
+  \kzcard{croisee}{(-4,17)}{\croisee{}}{}{Légendes qu'on aurait vécue ??}{\pierrerancune{}, troc}
+  \mklinkNS{cerclelunaire}{croisee}
+  \addmenhir{croisee}
+  \addmeet{croisee}{blue}
+
+  \kzcard{adiante}{(croisee.east) ++(\linkhor,1)}{\adiante{}}{\life[-1] / rien}{\graal, \dame{} nous protège}{Autres Tréfonds ?}
+  \mklinkEW{croisee}{adiante}
+  \mklinkSN{adiante}{falfuar}
+
+
+  \kzcard{nidcorbeaux}{(-7,27)}{\nidcorbeaux{}}{\trade{v1>O1}}{Marché \trade{o1>N1}, infor sur \tetemorrigan{}}{voir Mordred ??}
+  \mklinkNS{croisee}{nidcorbeaux}
+  \addmeet{nidcorbeaux}{blue}
+  
+\end{tikzpicture}
+
+\end{document}
