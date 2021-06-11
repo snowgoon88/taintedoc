@@ -1,0 +1,29 @@
+* [/] MCTS
+* [0/1] Follow
+** TODO [/] list card that can be played in follow
+* [0/1] Apply
+** TODO [/] Wounding player
+* GIT ***********************************************************************
+** delete remote branch
+git push -d origin <branch_name>
+** Submodule
+*** after cloning
+- git clone --recurse-submodules
+OR
+- git submodule init
+- git submodule update
+OR even
+git submodule update --init --recursive
+*** check submodules from time to time
+*** after action (pull/push/etc) on submodule
+git add/commit on parent git
+* ORG ***********************************************************************
+** Link [[link][display
+*** <<anchor>>
+*** file:rel_path::NNN or ::search words
+*** C-c l : store link
+*** C-c C-o : follow link
+*** C-c C-l : edit link/insert link
+** TODO
+*** C-c / t : sparse todo tree
+* ******************************************************************************
