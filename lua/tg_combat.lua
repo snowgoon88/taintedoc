@@ -23,6 +23,7 @@ Perso = {}
 Perso.mt = {} -- metatable that will be shared
 function Perso.tostring( perso )
    local s = "P: " .. perso.name
+   s = s .. " l= " .. perso.life .. "/" .. perso.life_max
    return s
 end
 Perso.mt.__tostring = Perso.tostring
@@ -32,6 +33,7 @@ p_bidule = {
    agression = 1,
    courage = 1,
    pragmatisme = 0,
+   life = 6, life_max = 6,
 }
 setmetatable( p_bidule, Perso.mt )
 
@@ -53,8 +55,8 @@ monster = {
    },
    free_key = 1,
    attack = {
-      { limup = 2, effect=-1 },
-      { limup = 4, effect=-2 },
+      { limup = 2, effects={-1, "wound_1"} },
+      { limup = 4, effects={-2, "wound_2"} },
    },
    damage = 0,
    max_damage = 7,
@@ -167,7 +169,19 @@ function apply_attack( monster, perso )
       print( "  atk in ["..limin..", "..limup.."[")
       if monster.damage >= limin and monster.damage < limup then
          print( "  resolve_effect" )
-         resolve_effect( atk.effect, monster, perso )
+         local effects = atk.effects
+         for name, val in pairs(effects) do
+            if type(val) == 'number' then             -- number => dmg
+               print( "  will change damage by " .. val )
+               resolve_effect( val, monster, perso )
+            elseif string.find( val, "wound_" ) then
+               -- get number of wounds
+               nb_wnd = tonumber( val.sub( val, 7))
+               print( "  will apply" .. nb_wnd+10 .. " wounds" )
+               perso.life = math.max( 0, perso.life - nb_wnd )
+            end
+         end
+
          break
       end
       limin = limup

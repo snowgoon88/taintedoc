@@ -1,8 +1,8 @@
 * [/] MCTS
 * [0/1] Follow
 ** TODO [/] list card that can be played in follow
-* [0/1] Apply
-** TODO [/] Wounding player
+* [1/1] Apply
+** DONE [/] Wounding player
 * GIT ***********************************************************************
 ** delete remote branch
 git push -d origin <branch_name>
