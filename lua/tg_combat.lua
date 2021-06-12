@@ -1,3 +1,4 @@
+require( "cards" )
 -- ********************************************************************** Card
 Card = {}
 Card.mt = {} -- metatable that will be shared
@@ -7,6 +8,93 @@ function Card.tostring( card )
 end
 Card.mt.__tostring = Card.tostring
 
+function Card.disp_open( card )
+   local s = "   "
+   if card.open_keys.agression then
+      if card.open_keys.agression == 2 then
+         s = s .. "A"
+      else
+         s = s .. "a"
+      end
+   else
+      s = s .. "."
+   end
+   if card.open_keys.courage then
+      if card.open_keys.courage == 2 then
+         s = s .. "C"
+      else
+         s = s .. "c"
+      end
+   else
+      s = s .. "."
+   end
+   if card.open_keys.pragmatisme then
+      if card.open_keys.pragmatisme == 2 then
+         s = s .. "P"
+      else
+         s = s .. "p"
+      end
+   else
+      s = s .. "."
+   end
+   s = s .. "_"
+   if card.open_magic then
+      s = s .. "m"
+   else
+      s = s .. "."
+   end
+   s = s .. "_"
+   if card.open_free == 2 then
+      s = s .. "2"
+   elseif card.open_free == 1 then
+      s = s .. "1"
+   elseif card.open_free == 0 then
+      s = s .. "0"
+   elseif card.open_free == "NEG" then
+      s = s .. "X"
+   end
+
+   return s
+end
+function Card.disp_effect( effect )
+   if effect == nil then
+      return "."
+   end
+   local s = ""
+   if type(effect) == 'number' then
+      s = s .. effect
+   elseif effect == "sequence" then
+      s = s .. "S"
+   elseif effect == "card" then
+      s = s .. "C"
+   elseif effect == "nothing" then
+      s = s .. "x"
+   else
+      s = s .. "?"
+   end
+   return s
+end
+function Card.disp_closed( card )
+   local s = "C: "
+   s = s .. Card.disp_effect( card.closed_keys.agression )
+   s = s .. Card.disp_effect( card.closed_keys.courage )
+   s = s .. Card.disp_effect( card.closed_keys.pragmatisme )
+   s = s .. "_"
+   s = s .. Card.disp_effect( card.closed_magic )
+   s = s .. "_"
+   s = s .. Card.disp_effect( card.closed_free )
+   return s
+end
+function Card.display( card, offset)
+   if offset == nil then
+      offset = ""
+   end
+   local s = offset .. Card.disp_closed( card )
+   s = s .. " «" .. card.title .. "»" .. " (" .. card.id .. ")"
+   s = s .. "\n" .. offset .. Card.disp_open( card )
+   return s
+end
+      
 c1 = {
    id = 1,
    title = "One",
@@ -184,16 +272,23 @@ end
 -- print( "=> Monster dmg="..monster.damage )
 
 -- ***************************************************************** MAIN MCTS
-print( "__INIT fight" )
-mcts_state = init_fight( monster )
-print( tostring(mcts_state) )
+-- print( "__INIT fight" )
+-- mcts_state = init_fight( monster )
+-- print( tostring(mcts_state) )
 
-print( "__PLAY CARD c1" )
-mcts_state = action_play_card( mcts_state, c1, p_bidule )
-print( tostring(mcts_state) )
+-- print( "__PLAY CARD c1" )
+-- mcts_state = action_play_card( mcts_state, c1, p_bidule )
+-- print( tostring(mcts_state) )
 
-print( "__Monster Attack" )
-mcts_state = action_monster_atk( mcts_state )
-print( tostring(mcts_state) )
+-- print( "__Monster Attack" )
+-- mcts_state = action_monster_atk( mcts_state )
+-- print( tostring(mcts_state) )
 
-   
+-- ****************************************************************** TEST_SEQ
+for name, val in pairs(cards_larve) do
+   setmetatable(val, Card.mt )
+end
+
+print( "__101 " )
+print( cards_larve[1] )
+print( Card.display( cards_larve[1] ))
