@@ -1,6 +1,6 @@
 * [/] MCTS
-* [0/1] Follow
-** TODO [/] list card that can be played in follow
+* [1/1] Follow
+** DONE [/] list card that can be played in follow
 * [1/1] Apply
 ** DONE [/] Wounding player
 * GIT ***********************************************************************

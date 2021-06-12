@@ -1,100 +1,7 @@
+-- Cards definition
 require( "cards" )
+
 -- ********************************************************************** Card
-Card = {}
-Card.mt = {} -- metatable that will be shared
-function Card.tostring( card )
-   local s = "C: " .. card.title .. " (" .. card.id .. ")"
-   return s
-end
-Card.mt.__tostring = Card.tostring
-
-function Card.disp_open( card )
-   local s = "   "
-   if card.open_keys.agression then
-      if card.open_keys.agression == 2 then
-         s = s .. "A"
-      else
-         s = s .. "a"
-      end
-   else
-      s = s .. "."
-   end
-   if card.open_keys.courage then
-      if card.open_keys.courage == 2 then
-         s = s .. "C"
-      else
-         s = s .. "c"
-      end
-   else
-      s = s .. "."
-   end
-   if card.open_keys.pragmatisme then
-      if card.open_keys.pragmatisme == 2 then
-         s = s .. "P"
-      else
-         s = s .. "p"
-      end
-   else
-      s = s .. "."
-   end
-   s = s .. "_"
-   if card.open_magic then
-      s = s .. "m"
-   else
-      s = s .. "."
-   end
-   s = s .. "_"
-   if card.open_free == 2 then
-      s = s .. "2"
-   elseif card.open_free == 1 then
-      s = s .. "1"
-   elseif card.open_free == 0 then
-      s = s .. "0"
-   elseif card.open_free == "NEG" then
-      s = s .. "X"
-   end
-
-   return s
-end
-function Card.disp_effect( effect )
-   if effect == nil then
-      return "."
-   end
-   local s = ""
-   if type(effect) == 'number' then
-      s = s .. effect
-   elseif effect == "sequence" then
-      s = s .. "S"
-   elseif effect == "card" then
-      s = s .. "C"
-   elseif effect == "nothing" then
-      s = s .. "x"
-   else
-      s = s .. "?"
-   end
-   return s
-end
-function Card.disp_closed( card )
-   local s = "C: "
-   s = s .. Card.disp_effect( card.closed_keys.agression )
-   s = s .. Card.disp_effect( card.closed_keys.courage )
-   s = s .. Card.disp_effect( card.closed_keys.pragmatisme )
-   s = s .. "_"
-   s = s .. Card.disp_effect( card.closed_magic )
-   s = s .. "_"
-   s = s .. Card.disp_effect( card.closed_free )
-   return s
-end
-function Card.display( card, offset)
-   if offset == nil then
-      offset = ""
-   end
-   local s = offset .. Card.disp_closed( card )
-   s = s .. " «" .. card.title .. "»" .. " (" .. card.id .. ")"
-   s = s .. "\n" .. offset .. Card.disp_open( card )
-   return s
-end
-      
 c1 = {
    id = 1,
    title = "One",
@@ -226,6 +133,28 @@ end
 -- ***************************************************************************
 -- **************************************************************** Mechanisms
 -- ***************************************************************************
+function is_valid_sequel( prev_card, card, perso )
+   -- is there a NON-negated "sequence" label somewhere ?
+   local nb_sequence = 0
+   -- first in keys
+   for kname, val in pairs(card.closed_keys) do
+      if val == "sequence" and prev_card.open_keys[kname] then
+         if perso[kname] >= prev_card.open_keys[kname] then
+            nb_sequence = nb_sequence + 1
+         end
+      end
+   end
+   -- then magic TODO DECISION
+   -- and free
+   if card.closed_free == "sequence" then
+      if prev_card.open_free > 0 then
+         nb_sequence = nb_sequence + 1
+      end
+   end
+   return (nb_sequence > 0)
+end
+
+
 function resolve_effect( effect, monster, perso )
    -- number => add to monster.damage
    if type(effect) == 'number' then
@@ -286,6 +215,19 @@ end
 -- apply_attack( monster, p_bidule )
 -- print( "=> Monster dmg="..monster.damage )
 
+-- ************************************************************* TEST Sequence
+function test_sequence()
+   --for name, card1 in pairs(cards_larve) do
+   card1 = cards_larve[2]
+   for name, card2 in pairs(cards_larve) do
+      print( "\n" )
+      print( Card.display( card1 ) )
+      print( Card.display( card2 ) )
+      print( "==> Valid = ", is_valid_sequel(card1, card2, p_bidule))
+   end
+--end
+end
+
 -- ***************************************************************** MAIN MCTS
 -- print( "__INIT fight" )
 -- mcts_state = init_fight( monster )
@@ -300,9 +242,8 @@ end
 -- print( tostring(mcts_state) )
 
 -- ****************************************************************** TEST_SEQ
-for name, val in pairs(cards_larve) do
-   setmetatable(val, Card.mt )
-end
+test_sequence()
+
 
 -- print( "__101 " )
 -- print( cards_larve[1] )
@@ -331,45 +272,51 @@ function take_card( perso, deck, nb_card )
    end
 end
 
-print( "__CREATE DECK" )
-deck = make_deck()
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "__SHUFFLE" )
-deck = shuffle_deck( deck )
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "__DEAL" )
-nc = table.remove( deck, 5)
-print( Card.tostring(nc) )
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "cards for " .. Perso.tostring(p_bidule) )
-for idx, val in ipairs(p_bidule.cards) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-take_card( p_bidule, deck )
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "cards for " .. Perso.tostring(p_bidule) )
-for idx, val in ipairs(p_bidule.cards) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-take_card( p_bidule, deck, 2 )
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "cards for " .. Perso.tostring(p_bidule) )
-for idx, val in ipairs(p_bidule.cards) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
-print( "__SHUFFLE" )
-deck = shuffle_deck( deck )
-for idx, val in ipairs(deck) do
-   print( idx .. " : " .. Card.tostring(val) )
-end
+-- print( "__CREATE DECK" )
+-- deck = make_deck()
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "__SHUFFLE" )
+-- deck = shuffle_deck( deck )
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "__DEAL" )
+-- nc = table.remove( deck, 5)
+-- print( Card.tostring(nc) )
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "cards for " .. Perso.tostring(p_bidule) )
+-- for idx, val in ipairs(p_bidule.cards) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- take_card( p_bidule, deck )
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "cards for " .. Perso.tostring(p_bidule) )
+-- for idx, val in ipairs(p_bidule.cards) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- take_card( p_bidule, deck, 2 )
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "cards for " .. Perso.tostring(p_bidule) )
+-- for idx, val in ipairs(p_bidule.cards) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+-- print( "__SHUFFLE" )
+-- deck = shuffle_deck( deck )
+-- for idx, val in ipairs(deck) do
+--    print( idx .. " : " .. Card.tostring(val) )
+-- end
+
+-- ***************************************************************** ALL CARDS
+-- print( "__***********************************************" )
+-- for idx, val in ipairs(cards_larve) do
+--    print( "\n" .. Card.display(val) )
+-- end
 
