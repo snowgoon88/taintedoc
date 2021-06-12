@@ -120,6 +120,7 @@ p_bidule = {
    agression = 1,
    courage = 1,
    pragmatisme = 0,
+   cards={},
 }
 setmetatable( p_bidule, Perso.mt )
 
@@ -289,6 +290,72 @@ for name, val in pairs(cards_larve) do
    setmetatable(val, Card.mt )
 end
 
-print( "__101 " )
-print( cards_larve[1] )
-print( Card.display( cards_larve[1] ))
+-- print( "__101 " )
+-- print( cards_larve[1] )
+-- print( Card.display( cards_larve[1] ))
+
+-- ********************************************************************** DECK
+function make_deck()
+   local deck = {}
+   for name, val in pairs(cards_larve) do
+      table.insert( deck, val )
+   end
+   return deck
+end
+math.randomseed(os.time()) 
+function shuffle_deck( deck )
+   for i = #deck, 2, -1 do
+      local j = math.random(i)
+      deck[i], deck[j] = deck[j], deck[i]
+   end
+   return deck
+end
+function take_card( perso, deck, nb_card )
+   nb_card = nb_card or 1 -- default value for nb
+   for v=1,nb_card do
+      table.insert( perso.cards, table.remove(deck) )
+   end
+end
+
+print( "__CREATE DECK" )
+deck = make_deck()
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "__SHUFFLE" )
+deck = shuffle_deck( deck )
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "__DEAL" )
+nc = table.remove( deck, 5)
+print( Card.tostring(nc) )
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "cards for " .. Perso.tostring(p_bidule) )
+for idx, val in ipairs(p_bidule.cards) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+take_card( p_bidule, deck )
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "cards for " .. Perso.tostring(p_bidule) )
+for idx, val in ipairs(p_bidule.cards) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+take_card( p_bidule, deck, 2 )
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "cards for " .. Perso.tostring(p_bidule) )
+for idx, val in ipairs(p_bidule.cards) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+print( "__SHUFFLE" )
+deck = shuffle_deck( deck )
+for idx, val in ipairs(deck) do
+   print( idx .. " : " .. Card.tostring(val) )
+end
+
