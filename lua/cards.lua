@@ -245,6 +245,7 @@ cards_larve = {
       open_free = 1,
       power="END annule 1 wound",
    },
+}
    
    
 
