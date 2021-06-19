@@ -98,7 +98,7 @@ end
 -- *********************************************************************** LARVE
 -- *****************************************************************************
 cards_larve = {
-   {
+   l01 = {
       id="l01",
       title="En Garde",
       closed_keys = {
@@ -114,7 +114,7 @@ cards_larve = {
       open_free = 2,
       power="END: choisissez atk de ennemi sauf repli; DEFAUSSE après atk",
    },
-   {
+   l02 = {
       id="l02",
       title="Attaque",
       closed_keys = {
@@ -129,7 +129,7 @@ cards_larve = {
       open_free = 1,
       power="END: 1 wound; DELAY 1 card;",
    },
-   {
+   l03 = {
       id="l03",
       title="Rassembler ses pensées",
       closed_keys = {
@@ -144,7 +144,7 @@ cards_larve = {
       open_free = 2,
       power="DELAY -2, 2 card",
    },
-   {
+   l04 = {
       id="l04",
       title="Coup Final",
       closed_keys = {
@@ -158,7 +158,7 @@ cards_larve = {
       open_free = 0,
       power="END: -2, 1 wound",
    },
-   {
+   l05 = {
       id="l05",
       title="Maléfice",
       closed_keys = {
@@ -174,7 +174,7 @@ cards_larve = {
       open_free = 2,
       power="INST 1 pour chaque magic_full contre violet",
    },
-   {
+   l06 = {
       id="l06",
       title="Magie Guerrière",
       closed_keys = {
@@ -189,7 +189,7 @@ cards_larve = {
       open_free = 2,
       power="INST 1 terror; DELAY 2",
    },
-   {
+   l07 = {
       id="l07",
       title="Repositionnement",
       closed_keys = {
@@ -204,7 +204,7 @@ cards_larve = {
       open_free = 1,
       power="SI fuite NO Opportunity",
    },
-   {
+   l08 = {
       id="l08",
       title="Défense",
       closed_keys = {
@@ -220,7 +220,7 @@ cards_larve = {
       open_free = 2,
       power="END: -2 wound; DELAY 1 card",
    },
-   {
+   l09 = {
       id="l09",
       title="Charge",
       closed_keys = {
@@ -235,7 +235,7 @@ cards_larve = {
       open_free = 1,
       power="END: 1 wound; DELAY 1 card",
    },
-   {
+   l10 = {
       id="l10",
       title="Piège Entravant",
       closed_keys = {
@@ -251,7 +251,7 @@ cards_larve = {
       open_free = 0,
       power="END NO atk, -1, DEFAUSSE",
    },
-   {
+   l11 = {
       id="l11",
       title="Trouver la Faiblesse",
       closed_keys = {
@@ -265,7 +265,7 @@ cards_larve = {
       open_free = 3,
       power="END 1 wound; DELAY card",
    },
-   {
+   l12 = {
       id="l12",
       title="Distraction",
       closed_keys = {
@@ -279,7 +279,7 @@ cards_larve = {
       open_free = 1,
       power="END SI x wounds ALORS -x INSTEAD",
    },
-   {
+   l13 = {
       id="l13",
       title="Attaque Prudente",
       closed_keys = {
@@ -295,7 +295,7 @@ cards_larve = {
       open_free = 2,
       power="END annule -1, annule 1 wound",
    },
-   {
+   l14s = {
       id="l14s",
       title="Magie du Sang",
       closed_keys = {
@@ -311,7 +311,7 @@ cards_larve = {
       open_free = 1,
       power="ALWAYS + INST -1 Vie, 3 charges; charge = magie",
    },
-   {
+   l15 = {
       id="l15",
       title="Attaque Risquée",
       closed_keys = {
@@ -326,7 +326,7 @@ cards_larve = {
       open_free = 1,
       power="INST p0.5 2 wound / p0.5 2",
    },
-   {
+   l14 = {
       id="l14",
       title="Cris de Guerre",
       closed_keys = {

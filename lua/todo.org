@@ -17,6 +17,10 @@ git submodule update --init --recursive
 *** check submodules from time to time
 *** after action (pull/push/etc) on submodule
 git add/commit on parent git
+** Uncommit
+*** undo act of commit `git reset --soft HEAD^`
+*** undo act of commit and unstage `git reset HEAD^`
+*** undo and go back to previous `git reset --hard HEAD^`
 * ORG ***********************************************************************
 ** Link [[link][display
 *** <<anchor>>

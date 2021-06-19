@@ -1,35 +1,89 @@
 -- Cards definition
 require( "cards" )
 
+-- ********************************************************************* Utils
+-- WARNING -- not tested !!!
+function deepcopy( orig )
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
 -- ********************************************************************** Card
-c1 = {
-   id = 1,
-   title = "One",
-   closed_keys = {
-      agression = { effect=3 },
-      courage = { effect=2 },
-   },
-   free_key = 1
-}
-setmetatable( c1, Card.mt )
+-- c1 = {
+--    id = 1,
+--    title = "One",
+--    closed_keys = {
+--       agression = { effect=3 },
+--       courage = { effect=2 },
+--    },
+--    free_key = 1
+-- }
+-- setmetatable( c1, Card.mt )
 
 -- ********************************************************************* Perso
 Perso = {}
 Perso.mt = {} -- metatable that will be shared
 function Perso.tostring( perso )
+   if perso == nil then
+      return "nil"
+   end
+
    local s = "P: " .. perso.name
-   s = s .. " l= " .. perso.life .. "/" .. perso.life_max
+   s = s .. " l= " .. perso.state.life .. "/" .. perso.life_max
+   s = s .. " c="
+   for name, val in pairs(perso.state.cards) do
+      s = s .. val.id .. ", "
+   end
+
    return s
 end
 Perso.mt.__tostring = Perso.tostring
+
+function Perso.clone_state( orig )
+   -- state is a copy, everything else is same reference
+   local clone = {}
+   -- get ref to everything except state
+   for name, val in pairs(orig) do
+      if name ~= "state" then
+         clone[name] = val
+      end
+   end
+   -- copy state
+   clone.state = {}
+   clone.state.life = orig.state.life
+   clone.state.cards = {}
+   for name, val in pairs(orig.state.cards) do
+      table.insert( clone.state.cards, val )
+   end
+   clone.state.deck = {}
+   for name, val in pairs(orig.state.deck) do
+      table.insert( clone.state.deck, val )
+   end
+   setmetatable( clone, Perso.mt ) -- make sur all share same metatable
+   return clone
+end
 
 p_bidule = {
    name = "Bidule",
    agression = 1,
    courage = 1,
    pragmatisme = 0,
-   life = 6, life_max = 6,
-   cards={},
+   life_max = 6,
+   state = {
+      life = 6,
+      cards = {},
+      deck = {}
+   }
 }
 setmetatable( p_bidule, Perso.mt )
 
@@ -38,24 +92,41 @@ Monster = {}
 Monster.mt = {} -- metatable that will be shared
 function Monster.tostring( monster )
    local s = "M: " .. monster.name
-   s = s .. " dmg=" .. monster.damage .. "/" .. monster.max_damage
+   s = s .. " dmg=" .. monster.state.damage .. "/" .. monster.max_damage
    return s
 end
 Monster.mt.__tostring = Monster.tostring
 
+function Monster.clone_state( orig )
+   local clone = {}
+    -- get ref to everything except state
+   for name, val in pairs(orig) do
+      if name ~= "state" then
+         clone[name] = val
+      end
+   end
+   -- copy state
+   clone.state = {}
+   clone.state.damage = orig.state.damage
+
+   setmetatable( clone, Monster.mt ) -- make sur all share same metatable
+   return clone
+end
 monster = {
    name = "Monster",
    open_keys = {
       agression = 1,
       courage = 2,
    },
-   free_key = 1,
+   open_free = 1,
    attack = {
       { limup = 2, effects={-1, "wound_1"} },
       { limup = 4, effects={-2, "wound_2"} },
    },
-   damage = 0,
    max_damage = 7,
+   state = {
+      damage = 0,
+   }
 }
 setmetatable( monster, Monster.mt )
 
@@ -81,34 +152,81 @@ function State.tostring( state )
    s = s .. "\n  monster=" .. tostring( state.monster )
    s = s .. "\n  to_play={"
    for name, val in pairs(state.still_to_play) do
-      s = s .. tostring( val ) .. ", "
+      s = s .. Perso.tostring( val ) .. " || "
    end
    s = s .. "}"
-   s = s .. "\n  active=" .. tostring( state.active_perso )
+   s = s .. "\n  active=" .. Perso.tostring( state.active_perso )
    return s
 end
 State.mt.__tostring = State.tostring
 
-function init_fight( monster )
+function init_fight( monster, all_perso )
    local state = {
+      -- card_sequence is a list of {carid,state} ?
       card_seq = {monster},
       monster = monster,
-      still_to_play = {p_bidule},
+      -- still to play is a list of {p_id, state} ?
+      still_to_play = {},
       active_perso = nil,
-      level = 0
    }
+   -- add perso
+   for name, p in pairs(all_perso) do
+      perso = Perso.clone_state(p)
+      perso.state.deck = shuffle_deck(make_deck())
+      take_card( perso, perso.state.deck, 3)
+      table.insert( state.still_to_play, perso )
+   end
+
    setmetatable( state, State.mt ) -- make sur all share same metatable
    return state
 end
-      
+function State.clone_state( orig )
+   local clone = {
+      card_seq = {},
+      monster = nil,
+      still_to_play = {},
+      active_perso = nil,
+   }
+   for name, val in pairs(orig.card_seq) do
+      table.insert( clone.card_seq, val )
+   end
+   if orig.monster then
+      clone.monster = Monster.clone_state( orig.monster )
+   end
+   for name, val in pairs(orig.still_to_play) do
+      table.insert( clone.still_to_play, Perso.clone_state(val) )
+   end
+   if orig.active_perso then
+      clone.active_perso = Perso.clone_state( orig.active_perso )
+   end
+    setmetatable( clone, State.mt ) -- make sur all share same metatable
+   return clone
+end
 
 -- WARNING : assume action are VALID -----------------------------------------
-function action_play_card( state, card, perso )
+function apply_action( state, action, args )
+   local new_state = State.clone_state( state )
+   new_state = action( new_state, args )
+   return new_state
+end
+function action_play_card( state, args )
+   local card = args.card
+   local perso = args.perso
    -- update active perso
-   state.active_perso = perso
-   -- remove from to_play
+   if state.active_perso == nil or state.active_perso.name ~= perso.name then
+      print( "*** set new clone in state ***" )
+      state.active_perso = Perso.clone_state(perso)      
+   end
+   -- remove card played
+   for idx, val in ipairs(state.active_perso.state.cards) do
+      if card == val then
+         table.remove( state.active_perso.state.cards, idx )
+         break
+      end
+   end
+   -- remove from still_to_play
    for idx, val in ipairs(state.still_to_play) do
-      if val == perso then
+      if val.name == perso.name then
          table.remove( state.still_to_play, idx )
          break
       end
@@ -117,6 +235,9 @@ function action_play_card( state, card, perso )
    table.insert( state.card_seq, card )
 
    -- apply card
+   print( Card.disp_open( state.card_seq[#state.card_seq - 1] ))
+   print( Card.display( card ))
+          
    apply_card( state.card_seq[#state.card_seq - 1], card,
                state.monster, state.active_perso )
    return state
@@ -156,26 +277,34 @@ end
 
 
 function resolve_effect( effect, monster, perso )
+   print( "resolve_effect for " .. effect )
    -- number => add to monster.damage
    if type(effect) == 'number' then
-      monster.damage = monster.damage + effect
+      monster.state.damage = monster.state.damage + effect
+   elseif effect == "sequence" then
+      -- nothing for this effect
    else
-      error( "invalid effect" )
+      print( "effect " .. effect .. " TODO" )
    end
 end
 
+
 function apply_card (prev_card, card, monster, perso)
-   
    -- Effect of closed keys
    for kname in pairs( prev_card.open_keys ) do
       if card.closed_keys[kname] then
          if perso[kname] >= prev_card.open_keys[kname] then
-            print( "  "..kname.." effect can be resolved" )
-            resolve_effect( card.closed_keys[kname].effect, monster, perso)
+            print( "  "..kname.." effect can be resolved: " )
+            resolve_effect( card.closed_keys[kname], monster, perso)
          else
             print( "  "..kname.." effect CANNOT be resolved" )
          end
       end
+   end
+   -- magic TODO
+   -- free effect
+   for i=1,prev_card.open_free do
+      resolve_effect( card.closed_free, monster, perso )
    end
 end
 
@@ -185,7 +314,7 @@ function apply_attack( monster, perso )
    for i,atk in ipairs(monster.attack) do
       limup = atk.limup
       print( "  atk in ["..limin..", "..limup.."[")
-      if monster.damage >= limin and monster.damage < limup then
+      if monster.state.damage >= limin and monster.state.damage < limup then
          print( "  resolve_effect" )
          local effects = atk.effects
          for name, val in pairs(effects) do
@@ -196,7 +325,7 @@ function apply_attack( monster, perso )
                -- get number of wounds
                nb_wnd = tonumber( val.sub( val, 7))
                print( "  will apply" .. nb_wnd+10 .. " wounds" )
-               perso.life = math.max( 0, perso.life - nb_wnd )
+               perso.state.life = math.max( 0, perso.state.life - nb_wnd )
             end
          end
 
@@ -241,13 +370,7 @@ end
 -- mcts_state = action_monster_atk( mcts_state )
 -- print( tostring(mcts_state) )
 
--- ****************************************************************** TEST_SEQ
-test_sequence()
 
-
--- print( "__101 " )
--- print( cards_larve[1] )
--- print( Card.display( cards_larve[1] ))
 
 -- ********************************************************************** DECK
 function make_deck()
@@ -268,7 +391,7 @@ end
 function take_card( perso, deck, nb_card )
    nb_card = nb_card or 1 -- default value for nb
    for v=1,nb_card do
-      table.insert( perso.cards, table.remove(deck) )
+      table.insert( perso.state.cards, table.remove(deck) )
    end
 end
 
@@ -320,3 +443,118 @@ end
 --    print( "\n" .. Card.display(val) )
 -- end
 
+-- ***************************************************************************
+-- ******************************************************************* ACTIONS
+-- ***************************************************************************
+
+-- ****************************************************************** TEST_SEQ
+--test_sequence()
+
+-- apply_card( monster, cards_larve[4], monster, p_bidule )
+
+-- STATE
+-- monster : dammage
+-- perso : cards, wounds, deck
+-- active perso
+
+-- NODE = {state, {action = next}}
+
+function best_sequence( monster, perso )
+   -- make random deck
+   local deck = make_deck()
+   deck = shuffle_deck( deck )
+   -- perso takes 3 cards
+   take_card( perso, deck, 3 )
+   for idx, val in ipairs(perso.state.cards) do
+      print( idx .. " : " .. Card.tostring(val) )
+   end
+   
+   -- check all combination to "greater" results
+   best_sequence = {}
+   max_damage = 0
+   for name, card1 in pairs(perso.state.cards) do
+      for name, card2 in pairs(perso.state.cards) do
+         if card2 ~= card1 then
+            for name, card3 in pairs(perso.state.cards) do
+               if card3 ~= card1 and card3 ~= card2 then
+                  monster.state.damage = 0
+                  print( "__APPLY ")
+                  print( Card.disp_open( monster ))
+                  print( Card.display( card1 ))
+
+                  apply_card( monster, card1, monster, perso )
+                  if is_valid_sequel(card1, card2, perso) then
+                     print( Card.display( card2 ))
+                     apply_card( card1, card2, monster, perso )
+                     if is_valid_sequel(card2, card3, perso) then
+                        print( Card.display( card3 ))
+                        apply_card( card2, card3, monster, perso )
+                     end
+                  end
+                  print( "==> DMG = " .. monster.state.damage .. "\n" )
+
+                  if monster.state.damage > max_damage then
+                     max_damage = monster.state.damage
+                     best_sequence = {card1, card2, card3}
+                  end
+               end
+            end
+         end
+      end
+   end
+   print( "__BEST SEQUENCE ="..max_damage )
+   for name, card in pairs(best_sequence) do
+      print( Card.display( card ))
+   end
+end
+--best_sequence( monster, p_bidule )
+
+
+function try_all_action( state, lvl )
+   print( "\n__TRY ALL ".. lvl .. " **********************************************" )
+   print("OLD STATE\n" .. State.tostring( state))
+   -- if lvl > 1 then
+   --    print( "-->STOP" )
+   --    return
+   -- end
+   for name, card in pairs(state.active_perso.state.cards) do
+      print( "\n__lvl=" .. lvl .. " APPLY " .. Card.tostring( card ) )
+      new_state = apply_action( state, action_play_card, {perso = state.active_perso,
+                                                          card = card })
+      print("NEW STATE\n" .. State.tostring( new_state))
+      try_all_action( new_state, lvl+1)
+   end
+end
+
+l_states = {}
+print( "__INIT Fight" )
+state = init_fight( monster, {p_bidule} )
+state.active_perso = state.still_to_play[1]
+table.remove( state.still_to_play )
+print( state )
+try_all_action( state, 0 )
+
+-- print( state )
+
+-- print( "\n__ACTION play card" )
+-- state = apply_action( state, action_play_card, {perso = state.still_to_play[1],
+--                                                 card = state.still_to_play[1].state.cards[1] } )
+-- table.insert( l_states, state )
+-- print(state)
+
+-- print( "\n__ACTION play card" )
+-- state = apply_action( state, action_play_card, {perso = state.active_perso,
+--                                                 card = state.active_perso.state.cards[1] } )
+-- table.insert( l_states, state )
+-- print(state)
+
+-- print( "\n__ACTION play card" )
+-- state = apply_action( state, action_play_card, {perso = state.active_perso,
+--                                                 card = state.active_perso.state.cards[1] } )
+-- table.insert( l_states, state )
+-- print(state)
+
+
+-- print( "__101 " )
+-- print( cards_larve[1] )
+-- print( Card.display( cards_larve[1] ))
