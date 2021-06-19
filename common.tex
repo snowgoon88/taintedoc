@@ -1,0 +1,274 @@
+%% *****************************************************************************
+%% ********************************************************************* questOK
+%% *****************************************************************************
+\newtcolorbox{questbox}{colback=violet!10,colframe=white,left skip=0.2\textwidth}
+\newcommand{\quest}[2]{%
+  {\footnotesize
+    \begin{questbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[violet]{2pt}{\faQuestionCircle[regular]}{violet}
+      #2
+    \end{awesomeblock}
+  \end{questbox}
+  }
+}
+
+\newtcolorbox{questOKbox}{colback=green!10,colframe=white,segmentation style={draw=violet,solid},left skip=0.2\textwidth}
+\newcommand{\questOK}[3]{%
+  {\footnotesize
+  \begin{questOKbox}{\hfill\textbf{#1}\vspace{2mm}\hrule}
+    \begin{awesomeblock}[green]{2pt}{\faQuestionCircle}{green}
+      {
+        #2
+
+        {\color{green}\vspace{2mm}\hrule\vspace{2mm}}
+
+        $\leadsto$ #3
+      }
+    \end{awesomeblock}
+  \end{questOKbox}
+  }
+}
+%% *****************************************************************************
+%% *****************************************************************************
+%% *****************************************************************************
+\newcommand{\nrj}[1][]{{\color{teal} #1\faBolt}}
+\newcommand{\nour}[1][]{{\color{olive} #1\faDrumstickBite}}
+\newcommand{\rich}[1][]{{\color{lightgray} #1\faCoins}}
+\newcommand{\rep}[1][]{{\color{orange} #1\faGrin}}
+\newcommand{\magic}[1][]{{\color{violet} #1\faSun}}
+\newcommand{\life}[1][]{{\color{red} #1\faHeart}}
+\newcommand{\terror}[1][]{{\color{black} #1\faSurprise}}
+
+\newtcolorbox{tradebox}{colback=yellow!10,colframe=white}
+%% *****************************************************************************
+%% Define a macro parsing its input argument one character at a time
+
+%% needed in Tex to be used in macro name
+\makeatletter
+
+\newcounter{@tradeitems}
+%% print ', ' if already an item before
+\newcommand\@tradeseparator{%
+  \ifnum\value{@tradeitems}>0 {,} \fi
+  \addtocounter{@tradeitems}{1}
+}
+
+%% e.E: Energie, n/N: NOUR, o/O: RICH, r/R: REP, m/M: MAGIC
+%% \trade[option put after]{combinaison de eXnXoXrXmX > EXNXOXRXMX}
+\newcommand\trade[2][]{%
+  \setcounter{@tradeitems}{0}
+  %\marginnote[right]{[\@mytrade#2\@nnil#1]}
+  [\@mytrade#2\@nnil#1]
+}
+
+\def\@mytrade#1{%
+  %% if #1 == \@nil do nothing and stop expanding
+  %% sinon utilise \mymacro@char@#1 et continue la suite
+  \ifx\@nnil#1\relax\else
+  \@nameuse{mytrade@char@#1\expandafter}%
+  \fi
+}
+%% Définit un "faiseur de macro"
+%% \defcharcode#1 définira une macro \mytrade@char@#1 qui finira par
+%% appeler récursirvement \@mytrade
+\def\defcharcode#1{%
+    \@namedef{mytrade@char@#1}%
+}
+%% e: use NRJ
+\defcharcode{e}#1{%
+  \@tradeseparator%
+  \nrj[-#1]%
+  \@mytrade
+}
+%% n: use NOUR
+\defcharcode{n}#1{% reads further character after q
+  \@tradeseparator%  
+  \nour[-#1]%
+  \@mytrade
+}
+%% o: use OR
+\defcharcode{o}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[-#1]%
+  \@mytrade
+}
+%% r: use REP
+\defcharcode{r}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[-#1]%
+  \@mytrade
+}
+%% m: use MAG
+\defcharcode{m}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[-#1]%
+  \@mytrade
+}
+%% v: use LIFE
+\defcharcode{v}#1{% reads further character after q
+  \@tradeseparator%
+  \life[-#1]%
+  \@mytrade
+}
+%% t: use TERROR
+\defcharcode{t}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[#1]%
+  \@mytrade
+}
+\defcharcode{>}{%
+  \setcounter{@tradeitems}{0}
+   $\Rightarrow$ 
+  \@mytrade
+}
+%% E: gain NRJ
+\defcharcode{E}#1{%
+  \@tradeseparator%
+  \nrj[#1]\index{Gain!Energie}%
+  \@mytrade
+}
+%% N: gain NOUR
+\defcharcode{N}#1{% reads further character after q
+  \@tradeseparator%
+  \nour[#1]\index{Gain!Nourriture}% 
+  \@mytrade
+}
+%% O: gain OR
+\defcharcode{O}#1{% reads further character after q
+  \@tradeseparator%
+  \rich[#1]\index{Gain!Richesse}%
+  \@mytrade
+}
+%% R: gain REP
+\defcharcode{R}#1{% reads further character after q
+  \@tradeseparator%
+  \rep[#1]\index{Gain!Reputation}%
+  \@mytrade
+}
+%% M: gain MAG
+\defcharcode{M}#1{% reads further character after q
+  \@tradeseparator%
+  \magic[#1]\index{Gain!Magie}%
+  \@mytrade
+}
+%% V: gain LIFE
+\defcharcode{V}#1{% reads further character after q
+  \@tradeseparator%
+  \life[#1]\index{Gain!Vie}%
+  \@mytrade
+}
+%% T: gain Terror
+\defcharcode{T}#1{% reads further character after q
+  \@tradeseparator%
+  \terror[-#1]\index{Gain!Terreur}%
+  \@mytrade
+}
+
+
+\makeatother
+%% *****************************************************************************
+
+%% *****************************************************************************
+%% ****************************************************************** secret/loc
+%% *****************************************************************************
+\newcommand{\loc}[1]{%
+  (lieu #1)
+}
+\newcommand{\secret}[1]{%
+  [secret #1]
+}
+%% using xparse
+%% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
+\NewDocumentCommand{\lieu}{m O{XX} o}{%
+  \underline{#1} (#2)\index{\IfNoValueTF{#3}{#1}{#3@#1}}%
+}
+
+\def\adiante{\lieu{Mer d'Adiante}[153]}
+\def\blanc{\lieu{Blanc-Lichen}[107]}
+\def\boismuraille{\lieu{Bois-Muraille}}
+\def\bosquet{\lieu{Bosquet des Chasseurs}[102]}
+\def\bourgr{\lieu{Bourg Pestiféré}[138,142][Bourg]}
+\def\bourgpacif{\lieu{Bourg Pacifié}[142][Bourg]}
+\def\broch{\lieu{Broch Cruach}[136]}
+\def\bundorca{\lieu{Bundorca}[135,148]}
+\def\camelot{\lieu{Camelot}}
+\def\cerclelunaire{\lieu{Cercle Lunaire}[133]}
+\def\chatoyantes{\lieu{Étendues Chatoyantes}[157][Etendues Chatoyantes]}
+\def\conclave{\lieu{Conclave Calciné}[104][Conclave Calcine]}
+\def\croisee{\lieu{Croisée}[152][Croisee]}
+\def\cuanacht{\lieu{Cuanacht}[101]}
+\def\debacle{\lieu{Debâcle}[118][Debacle]}
+\def\faldorca{\lieu{Faldorca}[148]}
+\def\falfuar{\lieu{Falfuar}[134,147]}
+\def\flotte{\lieu{Flotte d'Épaves}[119][Flotte d'Epaves]}
+\def\foire{\lieu{Foire du Guerrier}[103]}
+\def\hospice{\lieu{Hospice Insulaire}[109]}
+\def\lacmiroir{\lieu{Lac Miroir}[113]}
+\def\lames{\lieu{Lames de la Mélancholie}[105][Lames de la Melancholie]}
+\def\larvebois{\lieu{Larvebois}[108]}
+\def\loincomtat{\lieu{Loincomtat}}
+\def\newcamelot{\lieu{Nouvelle Camelot}[190]}
+\def\marchestitan{\lieu{Marches du Titan}[115]}
+\def\monasteremere{\lieu{Monastère de la Toute-Mère}[140][Monastere de la Toute-Mere]}
+\def\murmures{\lieu{Forêt des Murmures}[155][Foret des Murmures]}
+\def\nidcorbeaux{\lieu{Nid-de-Corbeaux}[160]}
+\def\noirbourbe{\lieu{Noirebourbe}[140]}
+\def\premierfort{\lieu{Premier Fort}[117]}
+\def\templemere{\lieu{Temple de la Toute-Mère}[115][Temple de la Toute-Mere]}
+\def\tombesordre{\lieu{Tombes de l'Ordre}[154]}
+\def\tordracine{\lieu{Tordracine}[114]}
+\def\tuathan{\lieu{Tuathan}}
+
+%%\newcommand{\perso}[1]{\textbf{#1}}
+%% using xparse
+%% 1=Nom, [2=key pour index sans accent]
+\NewDocumentCommand{\perso}{m o}{%
+  \textbf{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\agravain{\perso{Agravain}}
+\def\amergin{\perso{Amergin}}
+\def\arev{\perso{Arev}}
+\def\arthur{\perso{Arthur}}
+\def\aubert{\perso{Aubert}}
+\def\badb{\perso{Badb}}
+\def\bedivere{\perso{Bedivère}[Bedivere]}
+\def\beor{\perso{Béor}[Beor]}
+\def\bors{\perso{Bors}}
+\def\breagach{\perso{Bréagach}[Breagach]}
+\def\cosuil{\perso{Cosuil}}
+\def\dame{\perso{Dame du Lac}}
+\def\erfir{\perso{Erfyr}}
+\def\fael{\perso{Faël}[Fael]}
+\def\gaheris{\perso{Gaheris}}
+\def\galaad{\perso{Galaad}}
+\def\gauvain{\perso{Gauvain}}
+\def\geraint{\perso{Geraint}}
+\def\larve{\perso{Larve}}
+\def\lamorak{\perso{Lamorak}}
+\def\lancelot{\perso{Lancelot}}
+\def\macha{\perso{Macha}}
+\def\mordred{\perso{Mordred}}
+\def\morfran{\perso{Morfran}}
+\def\morgane{\perso{Morgane}}
+\def\neante{\perso{Néante}[Neante]}
+\def\nemain{\perso{Nemain}}
+\def\orrin{\perso{Orrin}}
+\def\palamede{\perso{Palamède}[Palamede]}
+\def\yvain{\perso{Yvain}}
+
+%\newcommand{\art}[1]{\texttt{#1}}
+\NewDocumentCommand{\art}{m o}{%
+  \texttt{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
+}
+\def\craie{\art{Craie Rituelle}}
+\def\graal{\art{Graal}}
+\def\fauxgraal{\art{Faux Graal}}
+\def\guivre{\art{Guivre}}
+\def\masque{\art{Masque Funéraire}[Masque Funeraire]}
+\def\pierrerancune{\art{Pierre des Rancunes}}
+\def\poupee{\art{Poupée de Paille}[Poupee de Paille]}
+\def\tetemorrigan{\art{Tête de Morrigan}[Tete de Morrigan]}
+
+\newcommand{\gain}[1]{{\color{red}\textbf{[#1]}}}
+
+\newcommand{\unk}[1]{{\color{orange}(#1)}}
