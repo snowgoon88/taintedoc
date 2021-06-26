@@ -72,6 +72,23 @@ function Perso.clone_state( orig )
    setmetatable( clone, Perso.mt ) -- make sur all share same metatable
    return clone
 end
+function Perso.equal( p1, p2 )
+   if p1 == nil and p2 == nil then return true end
+   -- same name
+   if p1.name ~= p2.name then
+      return false
+   end
+   -- same state
+   s1 = p1.state
+   s2 = p2.state
+   if s1.life ~= s2.life then
+      return false
+   end
+   if not Card.equal_list( s1.cards, s2.cards ) then return false end
+   if not Card.equal_list( s1.deck, s2.deck ) then return false end
+
+   return true
+end
 
 p_bidule = {
    name = "Bidule",
@@ -112,6 +129,19 @@ function Monster.clone_state( orig )
    setmetatable( clone, Monster.mt ) -- make sur all share same metatable
    return clone
 end
+function Monster.equal( m1, m2 )
+   -- same name
+   if m1.name ~= m2.name then
+      return false
+   end
+   -- same state
+   if m1.state.damage ~= m2.state.damage then
+      return false
+   end
+   
+   return true
+end
+
 monster = {
    name = "Monster",
    open_keys = {
@@ -201,6 +231,42 @@ function State.clone_state( orig )
    end
     setmetatable( clone, State.mt ) -- make sur all share same metatable
    return clone
+end
+function State.equal( s1, s2)
+   -- same card sequence
+   if not Card.equal_sequence( s1.card_seq, s2.card_seq ) then
+      return false
+   end
+   -- same monster
+   if not Monster.equal( s1.monster, s2.monster ) then
+      return false
+   end
+   -- same perso, active and still to play
+   if not Perso.equal( s1.active_perso, s2.active_perso ) then return false end
+   if #s1.still_to_play ~= #s2.still_to_play then
+      return false
+   end
+   for idx, p1 in ipairs(s1.still_to_play) do
+      -- also in s2 ?
+      found = false
+      for idx2, p2 in ipairs(s2.still_to_play) do
+         if Perso.equal(p1, p2) then
+            found = true
+            break
+         end
+      end
+      if not found then return false end
+   end
+   return true
+end
+   
+
+-- ********************************************************************* Model
+function env_transition( state, action )
+   new_state = apply_action( state, action.action, action.args )
+   -- TODO Reward
+   reward = state.monster.state.damage
+   return new_state, reward
 end
 
 -- WARNING : assume action are VALID -----------------------------------------
@@ -446,6 +512,83 @@ end
 -- ***************************************************************************
 -- ******************************************************************* ACTIONS
 -- ***************************************************************************
+function is_final( s )
+   -- is this a final state ?
+   -- Either monster is dead or perso out
+   if s.monster.state.damage >= s.monster.max_damage then
+      return true
+   end
+   if s.active_perso then
+      if s.active_perso.state.life == 0 then
+         return true
+      end
+   end
+   -- TODO temporary, final if active_perso out of cards
+   if s.active_perso then
+      if #s.active_perso.state.cards == 0 then
+         return true
+      end
+   end
+   return false
+end
+function possible_actions( s )
+   print( "__POSSIBLE ACTIONS " )
+   print( s )
+   actions = {}
+   -- active perso can play cards
+   if s.active_perso then
+      -- can pass : monster attack
+      table.insert( actions,
+                    {
+                       action = action_monster_atk,
+                       args = {},
+                       name = "monster_atk",
+      })
+      -- or play cards
+      local perso = s.active_perso
+      for idx, card in ipairs(perso.state.cards) do
+         table.insert( actions,
+                       {
+                          action = action_play_card,
+                          args = {
+                             perso = perso,
+                             card = card },
+                          name = "active_play_"..card.title,
+         })
+      end         
+   else
+      
+      -- others perso can play
+      for idp, perso in ipairs(s.still_to_play) do
+         for idc, card in ipairs(perso.state.cards) do
+            table.insert( actions,
+                          {
+                             action = action_play_card,
+                             args = {
+                                perso = perso,
+                                card = card },
+                             name = perso.name .."_play_"..card.title,
+            })
+         end
+      end
+   end
+
+   msg = "  poss. actions : "
+   for idx, act in ipairs(actions) do
+      msg = msg .. act.name .. ", "
+   end
+   print( msg )
+   return actions
+end
+function policy_uniform( s )
+   print( "__POLICY on ")
+   print( s )
+   -- must return an action
+   -- choose uniformly among possible actions
+   actions = possible_actions( s )
+
+   return actions[math.random(#actions)]
+end
 
 -- ****************************************************************** TEST_SEQ
 --test_sequence()
@@ -526,13 +669,16 @@ function try_all_action( state, lvl )
    end
 end
 
-l_states = {}
-print( "__INIT Fight" )
-state = init_fight( monster, {p_bidule} )
-state.active_perso = state.still_to_play[1]
-table.remove( state.still_to_play )
-print( state )
-try_all_action( state, 0 )
+function test_sequence()
+   l_states = {}
+   print( "__INIT Fight" )
+   state = init_fight( monster, {p_bidule} )
+   state.active_perso = state.still_to_play[1]
+   table.remove( state.still_to_play )
+   print( state )
+   try_all_action( state, 0 )
+end
+-- test_sequence()
 
 -- print( state )
 

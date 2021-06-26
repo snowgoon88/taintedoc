@@ -94,6 +94,41 @@ function Card.display( card, offset)
    s = s .. "\n" .. offset .. Card.disp_open( card )
    return s
 end
+
+function Card.equal_sequence( l1, l2 )
+   -- same length and same order
+   if #l1 ~= #l2 then
+      return false
+   end
+   for idx, val in ipairs(l1) do
+      if l1[idx] ~= l2[idx] then
+         return false
+      end
+   end
+   return true
+end
+
+function Card.equal_list( l1, l2 )
+   -- same length and in other
+   if #l1 ~= #l2 then
+      return false
+   end
+   for idx, val1 in ipairs(l1) do
+      -- also in l2 ?
+      found = false
+      for idx2, val2 in ipairs(l2) do
+         if val1 == val2 then
+            found = true
+            break
+         end
+      end
+      if not found then return false end
+   end
+   return true
+end
+   
+
+
 -- *****************************************************************************
 -- *********************************************************************** LARVE
 -- *****************************************************************************
