@@ -167,15 +167,21 @@ Une carte d'Avalon
   \addmenhir{tumulus}
   \mklinkWE{bosquet}{tumulus}
 
-  \nodeunk{112}{(tumulus.north) ++(0,\linkver)}
-  \mklinkNS{tumulus}{n112}
+  %%\nodeunk{112}{(tumulus.north) ++(0,\linkver)}
+  \kzcardunk{valsanglant}{(tumulus.north) ++(0,3\linkver)}{\valsanglant{}}{\trade{e1r1>O1} ou \trade{e1t1>O1}}{}{}
+  \mklinkNS{tumulus}{valsanglant}
   
   \kzcard{loincomtat}{(tumulus.west) ++(-\linkhor,0)}{\loincomtat{}}{\trade{o1>M1}}{Dolmen}{voir Dame \kincaid{}}
   \addmeet{loincomtat}{blue}
   \mklinkWE{tumulus}{loincomtat}
 
-  \nodeunk{111}{(loincomtat.north) ++(0,\linkver)}
-  \mklinkNS{loincomtat}{n111}
+  \kzcard{sousmuraille}{(loincomtat.north) ++(0,3\linkver)}{\sousmuraille{}}{\trade[, r. Verte]{e2>N1}}{\talismanterni{}, Histoire Loincomtat/Boismuraille}{}
+  \addmenhir{sousmuraille}
+  \mklinkNS{loincomtat}{sousmuraille}
+  \mklinkWE{valsanglant}{sousmuraille}
+
+  \nodeunk{131}{(sousmuraille.north) ++(0,\linkver)}
+  \mklinkNS{sousmuraille}{n131}
   
   \nodeunk{139}{(loincomtat.west) ++(-\linkhor,0)}
   \mklinkWE{loincomtat}{n139}
@@ -184,23 +190,24 @@ Une carte d'Avalon
   \kzcard{foire}{(cuanacht.west) ++(-\linkhor,0)}{\foire{}}{\trade[1XP]{e4v1>}}{Tournois}{}
   \mklinkWE{cuanacht}{foire}
   
-  \kzcard{debacle}{(foire.west) ++(-\linkhor,0)}{\debacle{}}{\trade{n1>R1}}{}{}
+  \kzcard{debacle}{(foire.west) ++(-\linkhor,0)}{\debacle{}}{\trade{n1>R1}}{Tombe \yvain{}}{}
   \addmenhir{debacle}
   \mklinkWE{foire}{debacle}
   \mklinkNS{debacle}{loincomtat}
   
-  \nodeunk{141}{(debacle.west) ++(-\linkhor,0)}
-  \mklinkWE{debacle}{n141}
+  \kzcard{bordwyrd}{(debacle.west) ++(-\linkhor,0)}{\bordwyrd{}}{\trade{o2>V3} ou \trade{m2>V3}}{\orrin{}}{Son voyage a Tuathan}
+  \addmenhir{bordwyrd}
+  \mklinkWE{debacle}{bordwyrd}
 
-  \nodeunk{120}{(debacle.south) ++(0,-2\linkver)}
-  \mklinkSN{debacle}{n120}
+  \kzcardunk{cornes}{(debacle.south) ++(0,-2\linkver)}{\cornes{}}{\trade{e2>N1}}{}{}
+  \mklinkSN{debacle}{cornes}
+
   
   \kzcardunk{larvebois}{(lames.west) ++(-\linkhor,0)}{\larvebois{}}{Explorer}{}{}
   \mklinkSN{foire}{larvebois}
   \mklinkWE{lames}{larvebois}
   
-  %%\path (larvebois.west) ++(-\linkhor,0) node[fill=yellow!10] (n120) {120};
-  \mklinkWE{larvebois}{n120}
+  \mklinkWE{larvebois}{cornes}
   
   \kzcard{conclave}{(cuanacht.east) ++(1.6\linkhor,0)}{\conclave{}}{}{«Rites du Menhir»}{}
   \mklinkEW{cuanacht}{conclave}
@@ -279,7 +286,8 @@ Une carte d'Avalon
 
   \nodeunk{132}{(cerclelunaire.west) ++(-\linkhor,0)}
   \mklinkWE{cerclelunaire}{n132}
-
+  \mklinkSN{n132}{valsanglant}
+  
   \kzcard{croisee}{(-4,17)}{\croisee{}}{}{Légendes qu'on aurait vécue ??}{\pierrerancune{}, troc}
   \mklinkNS{cerclelunaire}{croisee}
   \addmenhir{croisee}
