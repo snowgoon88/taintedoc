@@ -1,12 +1,21 @@
-* __CURRENT__: MCTS.eval
+* __CURRENT__: possibilité d'utiliser un point de magie
 * [0/1] MCTS
 ** TODO eval => need to reach a final state
 * [1/1] Follow
 ** DONE [/] list card that can be played in follow
-* [1/3] Apply
+* [1/4] Apply
 ** DONE [/] Wounding player
 ** TODO action_runaway 
 ** TODO action_end_turn : refill players
+** [1/2] TODO action_use_magic : avec un status
+- soit 2 action (play, play_with_magic) mais cela dépend aussi de la carte préc
+- soit, après pose, un status spécial (magic_decision) qui induit 2 anode
+=> ne pas jouer de carte si pas résolue.
+=> vérier, avant de jouer une carte ou autre action, si status est bien résolu
+*** DONE added action_status à State
+*** TODO Pas nouvelle carte si pas "ready"
+** Before play_card => get all counter
+
 * GIT ***********************************************************************
 ** delete remote branch
 git push -d origin <branch_name>

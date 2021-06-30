@@ -170,9 +170,10 @@ State.mt = {} -- metatable that will be shared
 --    monster = {},
 --    still_to_play = {},
 --    active_perso = nil,
+--    action_status = "ready" | "dec_magic",
 -- }
 function State.tostring( state )
-   local s = "STATE"
+   local s = "STATE status="..state.action_status
    s = s .. "\n  len=" .. #state.card_seq
    s = s .. "\n  seq={"
    for name, val in pairs(state.card_seq) do
@@ -198,6 +199,7 @@ function init_fight( monster, all_perso )
       -- still to play is a list of {p_id, state} ?
       still_to_play = {},
       active_perso = nil,
+      action_status="ready",
    }
    -- add perso
    for name, p in pairs(all_perso) do
@@ -216,6 +218,7 @@ function State.clone_state( orig )
       monster = nil,
       still_to_play = {},
       active_perso = nil,
+      action_status = orig.action_status,
    }
    for name, val in pairs(orig.card_seq) do
       table.insert( clone.card_seq, val )
@@ -241,8 +244,9 @@ function State.equal( s1, s2)
    if not Monster.equal( s1.monster, s2.monster ) then
       return false
    end
-   -- same perso, active and still to play
+   -- same perso, active, status, and still to play
    if not Perso.equal( s1.active_perso, s2.active_perso ) then return false end
+   if not s1.action_status == s2.action_status then return false end
    if #s1.still_to_play ~= #s2.still_to_play then
       return false
    end
@@ -537,42 +541,60 @@ function possible_actions( s )
    actions = {}
    -- active perso can play cards
    if s.active_perso then
-      -- can pass : monster attack
-      table.insert( actions,
-                    {
-                       action = action_monster_atk,
-                       args = {},
-                       name = "monster_atk",
-      })
-      -- or play cards
-      local perso = s.active_perso
-      for idx, card in ipairs(perso.state.cards) do
+      -- need to be resolved
+      if s.action_status == "dec_magic" then
          table.insert( actions,
                        {
-                          action = action_play_card,
-                          args = {
-                             perso = perso,
-                             card = card },
-                          name = "active_play_"..card.title,
+                          action = action_add_magic,
+                          args = {},
+                          name = "use_magic"
          })
-      end         
-   else
-      
-      -- others perso can play
-      for idp, perso in ipairs(s.still_to_play) do
-         for idc, card in ipairs(perso.state.cards) do
+         table.insert( actions,
+                       {
+                          action = action_solve_card,
+                          args = {},
+                          name = "solve_card"
+         })
+      elseif s.action_status == "ready" then
+                       
+         -- can pass : monster attack
+         table.insert( actions,
+                       {
+                          action = action_monster_atk,
+                          args = {},
+                          name = "monster_atk",
+         })
+         -- or play cards
+         local perso = s.active_perso
+         for idx, card in ipairs(perso.state.cards) do
             table.insert( actions,
                           {
                              action = action_play_card,
                              args = {
-                                perso = perso,
-                                card = card },
-                             name = perso.name .."_play_"..card.title,
+                             perso = perso,
+                             card = card },
+                             name = "active_play_"..card.title,
             })
          end
       end
+   else
+      -- need to be resolved
+      if s.action_status == "ready" then
+         -- others perso can play
+         for idp, perso in ipairs(s.still_to_play) do
+            for idc, card in ipairs(perso.state.cards) do
+               table.insert( actions,
+                             {
+                                action = action_play_card,
+                                args = {
+                                   perso = perso,
+                                   card = card },
+                                name = perso.name .."_play_"..card.title,
+               })
+            end
+         end
+      end
    end
-
    msg = "  poss. actions : "
    for idx, act in ipairs(actions) do
       msg = msg .. act.name .. ", "
