@@ -40,6 +40,7 @@ function Perso.tostring( perso )
 
    local s = "P: " .. perso.name
    s = s .. " l= " .. perso.state.life .. "/" .. perso.life_max
+   s = s .. " m= " .. perso.state.magic
    s = s .. " c="
    for name, val in pairs(perso.state.cards) do
       s = s .. val.id .. ", "
@@ -61,6 +62,7 @@ function Perso.clone_state( orig )
    -- copy state
    clone.state = {}
    clone.state.life = orig.state.life
+   clone.state.magic = orig.state.magic
    clone.state.cards = {}
    for name, val in pairs(orig.state.cards) do
       table.insert( clone.state.cards, val )
@@ -84,6 +86,9 @@ function Perso.equal( p1, p2 )
    if s1.life ~= s2.life then
       return false
    end
+   if s1.magic ~= s2.magic then
+      return false
+   end
    if not Card.equal_list( s1.cards, s2.cards ) then return false end
    if not Card.equal_list( s1.deck, s2.deck ) then return false end
 
@@ -98,6 +103,7 @@ p_bidule = {
    life_max = 6,
    state = {
       life = 6,
+      magic = 2,
       cards = {},
       deck = {}
    }
@@ -279,9 +285,26 @@ function apply_action( state, action, args )
    new_state = action( new_state, args )
    return new_state
 end
+-- TODO function to check if magic is needed (SEQUENCE) or usable
+-- result of applying  magic ?
+-- in args, if magic is applied
+function has_magic_link( state, card )
+   -- magic open and close key, what would be the result
+   -- nil if magic link not possible
+   prev_card = state.card_seq[#state.card_seq - 1]
+   if prev_card.open_magic == nil then
+      return nil
+   else
+      return card.closed_magic
+   end
+end
 function action_play_card( state, args )
    local card = args.card
    local perso = args.perso
+   -- Can only play card if ready
+   if state.action_status ~= "ready" then
+      error( "action_play_card CANNOT be used on NOT ready state" )
+   end
    -- update active perso
    if state.active_perso == nil or state.active_perso.name ~= perso.name then
       print( "*** set new clone in state ***" )
@@ -304,14 +327,20 @@ function action_play_card( state, args )
    -- insert at end of pile
    table.insert( state.card_seq, card )
 
-   -- apply card
+   -- apply card if magic is well decided, otherwise status becomes "dec_magic"
+   if has_magic_link(state, card) and args.magic == nil then
+      state.action_status = "dec_magic"
+      return state
+   end
    print( Card.disp_open( state.card_seq[#state.card_seq - 1] ))
    print( Card.display( card ))
           
    apply_card( state.card_seq[#state.card_seq - 1], card,
-               state.monster, state.active_perso )
+               state.monster, state.active_perso, args.magic )
    return state
 end
+-- TODO function action_add_magic()
+-- TODO end
 function action_monster_atk( state )
    -- apply attack on active player
    apply_attack( state.monster, state.active_perso )
@@ -359,7 +388,7 @@ function resolve_effect( effect, monster, perso )
 end
 
 
-function apply_card (prev_card, card, monster, perso)
+function apply_card (prev_card, card, monster, perso, magic_spend)
    -- Effect of closed keys
    for kname in pairs( prev_card.open_keys ) do
       if card.closed_keys[kname] then
@@ -371,7 +400,20 @@ function apply_card (prev_card, card, monster, perso)
          end
       end
    end
-   -- magic TODO
+   -- Magic
+   if prev_card.open_magic and card.closed_magic then
+      if magic_spend > 0 then
+         -- spend the magic points from perso
+         perso.state.magic = perso.state.magic - magic_spend
+         if perso.state.magic < 0 then
+            error( "apply_card on Perso with not enough Magic" )
+         end
+         -- add magic on card
+         card.state.magic = card.state.magic + magic_spend
+         -- resolve effect
+         resolve_effect( card.closed_magic, monster, perso )
+      end
+   end
    -- free effect
    for i=1,prev_card.open_free do
       resolve_effect( card.closed_free, monster, perso )

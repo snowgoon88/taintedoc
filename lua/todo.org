@@ -1,4 +1,5 @@
 * __CURRENT__: possibilité d'utiliser un point de magie
+* __CURRENT__: also deal with sequence
 * [0/1] MCTS
 ** TODO eval => need to reach a final state
 * [1/1] Follow
