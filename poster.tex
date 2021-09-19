@@ -180,8 +180,10 @@ Une carte d'Avalon
   \mklinkNS{loincomtat}{sousmuraille}
   \mklinkWE{valsanglant}{sousmuraille}
 
-  \nodeunk{131}{(sousmuraille.north) ++(0,\linkver)}
-  \mklinkNS{sousmuraille}{n131}
+  %\nodeunk{131}
+  \kzcard{boismuraille}{(sousmuraille.north) ++(-1.5\linkhor,2.5\linkver)}{\boismuraille{}}{}{1° expédition}{chef mercenaires,\ultan{},quartier commerçant, diplomatie}
+  \mklinkNS{sousmuraille}{boismuraille}
+  \addmeet{boismuraille}{blue}
   
   \nodeunk{139}{(loincomtat.west) ++(-\linkhor,0)}
   \mklinkWE{loincomtat}{n139}
@@ -284,10 +286,19 @@ Une carte d'Avalon
   \kzcard{cerclelunaire}{(-5,8)}{\cerclelunaire{}}{\trade{e2o1>M1} ou \trade{e2n1>M1}}{Dévoile \fauxgraal{}}{Succession de \geraint{}}
   \mklinkWE{falfuar}{cerclelunaire}
 
-  \nodeunk{132}{(cerclelunaire.west) ++(-\linkhor,0)}
-  \mklinkWE{cerclelunaire}{n132}
-  \mklinkSN{n132}{valsanglant}
-  
+  %\nodeunk{132}
+  \kzcard{visageserein}{(cerclelunaire.west) ++(-1.5\linkhor,-1.5)}{\visageserein{}}{\trade{e3>T2M1}}{Mystère résolu}{\secret{33} et «5° Dernier Refuge»}
+  \mklinkWE{cerclelunaire}{visageserein}
+  \mklinkSN{visageserein}{valsanglant}
+  \mklinkWE{visageserein}{boismuraille}
+  \addmenhir{visageserein}
+
+  \kzcard{longcairn}{(visageserein.north) ++(0,2\linkver)}{\longcairn{}}{\trade[-1 obj]{e1>O1R1}}{1er expedition}{recueillir tombes, \textbf{Tuathan}, ...}
+  \mklinkNS{visageserein}{longcairn}
+
+  \kzcard{valleegardiens}{(longcairn.west) ++(-2\linkhor,3)}{\valleegardiens{}}{Explorer}{\aubert{} mort}{}
+  \mklinkWE{longcairn}{valleegardiens}
+
   \kzcard{croisee}{(-4,17)}{\croisee{}}{}{Légendes qu'on aurait vécue ??}{\pierrerancune{}, troc}
   \mklinkNS{cerclelunaire}{croisee}
   \addmenhir{croisee}
