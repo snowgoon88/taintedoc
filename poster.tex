@@ -185,9 +185,13 @@ Une carte d'Avalon
   \mklinkNS{sousmuraille}{boismuraille}
   \addmeet{boismuraille}{blue}
   
-  \nodeunk{139}{(loincomtat.west) ++(-\linkhor,0)}
-  \mklinkWE{loincomtat}{n139}
-  
+  %\nodeunk{139}
+  \kzcard{devastation}{(loincomtat.west) ++(-\linkhor,0)}{\devastation{}}{\trade{e2v2>O3}}{Parle avec mineur momifi\'e}{Salle ancienne (chap 10)}
+  \mklinkWE{loincomtat}{devastation}
+
+  \kzcard{ondechute}{(devastation.west) ++(-\linkhor,0)}{\ondechute{}}{}{ancien péage, tunnel Tuathan}{}
+  \addmeet{ondechute}{violet}
+  \mklinkWE{devastation}{ondechute}
   
   \kzcard{foire}{(cuanacht.west) ++(-\linkhor,0)}{\foire{}}{\trade[1XP]{e4v1>}}{Tournois}{}
   \mklinkWE{cuanacht}{foire}
@@ -201,7 +205,7 @@ Une carte d'Avalon
   \addmenhir{bordwyrd}
   \mklinkWE{debacle}{bordwyrd}
 
-  \kzcardunk{cornes}{(debacle.south) ++(0,-2\linkver)}{\cornes{}}{\trade{e2>N1}}{}{}
+  \kzcard{cornes}{(debacle.south) ++(0,-2\linkver)}{\cornes{}}{\trade{e2>N1}}{veileurs, femme sauvage libérée}{}
   \mklinkSN{debacle}{cornes}
 
   
