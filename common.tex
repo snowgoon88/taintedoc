@@ -201,7 +201,8 @@
 \def\croisee{\lieu{Croisée}[152][Croisee]}
 \def\cuanacht{\lieu{Cuanacht}[101]}
 \def\debacle{\lieu{Debâcle}[118][Debacle]}
-\def\devastation{\lieu{Dévastation}[139][Dévastation]}
+\def\devastation{\lieu{Dévastation}[139][Devastation]}
+\def\dolmeneffondre{\lieu{Dolmen Effondré}[126][Dolmen Effondre]}
 \def\faldorca{\lieu{Faldorca}[148]}
 \def\falfuar{\lieu{Falfuar}[134,147]}
 \def\flotte{\lieu{Flotte d'Épaves}[119][Flotte d'Epaves]}
@@ -272,6 +273,7 @@
 \def\nemain{\perso{Nemain}}
 \def\orrin{\perso{Orrin}}
 \def\palamede{\perso{Palamède}[Palamede]}
+\def\siobhan{\perso{Siobhan}}
 \def\ultan{\perso{Ultan}}
 \def\yvain{\perso{Yvain}}
 
@@ -279,17 +281,21 @@
 \NewDocumentCommand{\art}{m o}{%
   \texttt{#1}\index{\IfNoValueTF{#2}{#1}{#2@#1}}%
 }
+\def\competence{\art{Compétence}[Competence]}
 \def\craie{\art{Craie Rituelle}}
 \def\excalibur{\art{Excalibur}}
 \def\graal{\art{Graal}}
 \def\fauxgraal{\art{Faux Graal}}
 \def\guivre{\art{Guivre}}
 \def\masque{\art{Masque Funéraire}[Masque Funeraire]}
+\def\menhirrudiment{\art{Menhir Rudimentaire}}
 \def\outilspierre{\art{Outils de Tailleur de Pierre}}
 \def\pierrerancune{\art{Pierre des Rancunes}}
 \def\poupee{\art{Poupée de Paille}[Poupee de Paille]}
 \def\talismanterni{\art{Talisman Terni}}
 \def\tetemorrigan{\art{Tête de Morrigan}[Tete de Morrigan]}
+\def\wyrdroche{\art{WyrdRoche}}
+\def\wyrdparfait{\art{Wyrdroche Parfaite}}
 
 \newcommand{\gain}[1]{{\color{red}\textbf{[#1]}}}
 

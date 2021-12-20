@@ -60,6 +60,19 @@
     };
    %\end{scope}
 }
+\newcommand{\kzcardwyrd}[6]{%
+  %\begin{scope}[text width=\cardsize]
+
+  \path[text width=\cardsize] {#2} node[matrix,fill=blue!10,rounded corners] (#1)
+       {
+      #3;\\
+      %%\node[draw=black] (title) {#3};\\
+      \node (trade) {#4}; \draw (node cs:name=trade,anchor=south west) -- (node cs:name=trade,anchor=south east);\\
+      \node (done) {#5}; \\
+      \node (todo) {{\color{red}\bm{$\leadsto$} #6}};\\
+    };
+   %\end{scope}
+}
 %% using xparse
 %% 1=Nom, [2=entry, default=XX], [3=key pour index sans accent]
 \RenewDocumentCommand{\lieu}{m O{XX} o}{%
@@ -168,13 +181,15 @@ Une carte d'Avalon
   \mklinkWE{bosquet}{tumulus}
 
   %%\nodeunk{112}{(tumulus.north) ++(0,\linkver)}
-  \kzcardunk{valsanglant}{(tumulus.north) ++(0,3\linkver)}{\valsanglant{}}{\trade{e1r1>O1} ou \trade{e1t1>O1}}{}{}
+  \kzcard{valsanglant}{(tumulus.north) ++(0,3\linkver)}{\valsanglant{}}{\trade{e1r1>O1} ou \trade{e1t1>O1}}{Champ de bataille sans vie}{}
   \mklinkNS{tumulus}{valsanglant}
   
   \kzcard{loincomtat}{(tumulus.west) ++(-\linkhor,0)}{\loincomtat{}}{\trade{o1>M1}}{Dolmen}{voir Dame \kincaid{}}
   \addmeet{loincomtat}{blue}
   \mklinkWE{tumulus}{loincomtat}
 
+  \kzcardwyrd{dolmeneffondre}{(loincomtat.center) ++(0,-1)}{\dolmeneffondre{}}{}{\siobhan{}}{}
+  
   \kzcard{sousmuraille}{(loincomtat.north) ++(0,3\linkver)}{\sousmuraille{}}{\trade[, r. Verte]{e2>N1}}{\talismanterni{}, Histoire Loincomtat/Boismuraille}{}
   \addmenhir{sousmuraille}
   \mklinkNS{loincomtat}{sousmuraille}
