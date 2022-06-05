@@ -1,3 +1,7 @@
+help:
+	@echo "  make campagne | adiante | poster (=all)"
+	@echo "  make web"
+
 all: campagne adiante poster
 
 campagne: campagne.tex
